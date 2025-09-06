@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send S2 Tokens | S2 App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #144ee3;
+      --primary-dark: #0a1876;
+      --secondary: #48c6ef;
+      --gaming-accent: #ff6b35;
+      --gaming-success: #00e676;
+      --gaming-purple: #9c27b0;
+      --gaming-gold: #ffc107;
+      --gaming-danger: #ff1744;
+      --background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 40px rgba(0,0,0,0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #8892b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-3px);
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 230, 118, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .container::after {
+      content: "";
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(72, 198, 239, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gaming-success) 0%, var(--secondary) 50%, var(--primary) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      margin-bottom: 30px;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .send-icon {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .send-icon i {
+      font-size: 4rem;
+      color: var(--gaming-success);
+      text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
+    .form-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .input-container {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      z-index: 1;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 15px 15px 45px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--gaming-success);
+      box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    input[type="number"] {
+      font-family: 'Courier New', monospace;
+    }
+
+    .send-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%);
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.3);
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .send-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .send-btn:hover::before {
+      left: 100%;
+    }
+
+    .send-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 230, 118, 0.4);
+    }
+
+    .send-btn:disabled {
+      background: linear-gradient(135deg, #6c757d, #495057);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .gas-info {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .gas-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--gaming-gold);
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .gas-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .faucet-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(20, 78, 227, 0.3);
+    }
+
+    .faucet-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(20, 78, 227, 0.4);
+      text-decoration: none;
+      color: white;
+    }
+
+    .status-message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .status-message.success {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid rgba(0, 230, 118, 0.3);
+      color: var(--gaming-success);
+    }
+
+    .status-message.error {
+      background: rgba(255, 23, 68, 0.15);
+      border: 1px solid rgba(255, 23, 68, 0.3);
+      color: var(--gaming-danger);
+    }
+
+    .status-message.info {
+      background: rgba(72, 198, 239, 0.15);
+      border: 1px solid rgba(72, 198, 239, 0.3);
+      color: var(--secondary);
+    }
+
+    /* --- UPDATED BALANCE DISPLAY STYLES --- */
+    .balance-display {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .balance-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .balance-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+
+    .balance-value {
+      color: var(--gaming-success);
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .balance-value.eth {
+      color: var(--secondary); /* Distinguishing color for ETH */
+    }
+
+    .loading-balance {
+      background: linear-gradient(90deg, rgba(0, 230, 118, 0.2) 25%, rgba(0, 230, 118, 0.4) 50%, rgba(0, 230, 118, 0.2) 75%);
+      background-size: 200% 100%;
+      animation: loadingShimmer 1.5s infinite;
+      border-radius: 4px;
+      height: 24px;
+      width: 120px;
+      margin: 0 auto;
+    }
+
+    /* New loading shimmer for ETH */
+    .loading-balance.eth {
+      background: linear-gradient(90deg, rgba(72, 198, 239, 0.2) 25%, rgba(72, 198, 239, 0.4) 50%, rgba(72, 198, 239, 0.2) 75%);
+      background-size: 200% 100%;
+      animation: loadingShimmer 1.5s infinite;
+    }
+    /* --- END OF UPDATED BALANCE STYLES --- */
+
+
+    @keyframes loadingShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .transaction-tips {
+      background: rgba(72, 198, 239, 0.1);
+      border: 1px solid rgba(72, 198, 239, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tips-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .tips-list {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tips-list li {
+      margin-bottom: 8px;
+      padding-left: 5px;
+    }
+
+    /* Loading animation */
+    @keyframes loading {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading {
+      animation: loading 1s linear infinite;
+    }
+
+    /* Success animation */
+    @keyframes successBounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .success-animation {
+      animation: successBounce 0.6s ease;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px 10px;
+        padding: 25px 20px;
+      }
+      
+      h2 {
+        font-size: 2.2rem;
+      }
+      
+      .send-icon i {
+        font-size: 3rem;
+      }
+      
+      input {
+        padding: 12px 12px 12px 40px;
+      }
+      
+      .gas-info, .transaction-tips {
+        padding: 15px;
+      }
+
+      /* Stack balances on mobile */
+      .balance-display {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="dashboard.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+  </a>
+
+  <div class="container">
+    <div class="send-icon">
+      <i class="fas fa-paper-plane"></i>
+    </div>
+    
+    <h2>💸 Send S2 Tokens</h2>
+
+    <div class="balance-display">
+      <div class="balance-item">
+        <div class="balance-label">Your S2 Balance</div>
+        <div class="balance-value" id="currentBalance">
+          <div class="loading-balance"></div>
+        </div>
+      </div>
+      <div class="balance-item">
+        <div class="balance-label">Your ETH (Sepolia) Balance</div>
+        <div class="balance-value eth" id="ethBalance">
+          <div class="loading-balance eth"></div>
+        </div>
+      </div>
+    </div>
+    <div class="gas-info">
+      <div class="gas-title">
+        <i class="fas fa-gas-pump"></i>
+        Gas Fee Required
+      </div>
+      <div class="gas-description">
+        To make transactions, ETH is needed for gas fees. Claim 0.05 ETH from the Ethereum Sepolia testnet faucet below:
+      </div>
+      <a href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="faucet-link">
+        <i class="fas fa-faucet"></i>
+        Get Sepolia ETH (Testnet)
+      </a>
+    </div>
+
+    <div class="form-section">
+      <form id="sendForm">
+        <div class="form-group">
+          <label for="toAddress">
+            <i class="fas fa-wallet"></i> Recipient Wallet Address
+          </label>
+          <div class="input-container">
+            <i class="fas fa-user input-icon"></i>
+            <input 
+              type="text" 
+              id="toAddress" 
+              placeholder="0x742d35Cc6634C0532925a3b8D6Ac6c2bB02C906e"
+              required 
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">
+            <i class="fas fa-coins"></i> Amount to Send (S2 Tokens)
+          </label>
+          <div class="input-container">
+            <i class="fas fa-hashtag input-icon"></i>
+            <input 
+              type="number" 
+              id="amount" 
+              placeholder="Enter amount (e.g., 10)"
+              required 
+              min="0" 
+              step="1" 
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="send-btn" id="sendButton">
+          <i class="fas fa-paper-plane"></i> Send Tokens
+        </button>
+      </form>
+    </div>
+
+    <div class="transaction-tips">
+      <div class="tips-title">
+        <i class="fas fa-lightbulb"></i>
+        Transaction Tips
+      </div>
+      <ul class="tips-list">
+        <li>Double-check the recipient wallet address before sending</li>
+        <li>Ensure you have enough ETH for gas fees (~0.01 ETH recommended)</li>
+        <li>Transactions are irreversible once confirmed on the blockchain</li>
+        <li>It may take a few minutes for the transaction to complete</li>
+      </ul>
+    </div>
+
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.min.js";
+
+    // --- UPDATED DOM ELEMENTS ---
+    const currentBalanceElem = document.getElementById('currentBalance');
+    const ethBalanceElem = document.getElementById('ethBalance'); // New element for ETH balance
+    const sendButton = document.getElementById('sendButton');
+    const form = document.getElementById('sendForm');
+    const statusMessage = document.getElementById('statusMessage');
+
+    let walletAddress = '';
+    let userBalance = 0;
+
+    // Token contract details
+    const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/ClpCcgdo1MhTbt2zqT84E");
+    const tokenAddress = "0x56eaaf87a9f4b2cc413df472b23950b2a8db2fcc";
+    const tokenABI = [
+      "function balanceOf(address) view returns (uint256)",
+      "function decimals() view returns (uint8)",
+      "function symbol() view returns (string)"
+    ];
+
+    // --- UPDATED FUNCTION: Load real S2 AND ETH balances ---
+    async function loadAllBalances() {
+      try {
+        if (!walletAddress) {
+          currentBalanceElem.innerHTML = 'Wallet not connected';
+          ethBalanceElem.innerHTML = 'Wallet not connected'; // Update ETH elem
+          return;
+        }
+
+        console.log('Loading balances for wallet:', walletAddress);
+        
+        // --- Get S2 Token Balance ---
+        const contract = new ethers.Contract(tokenAddress, tokenABI, provider);
+        const rawBalance = await contract.balanceOf(walletAddress);
+        const decimals = await contract.decimals();
+        const symbol = await contract.symbol();
+        
+        userBalance = parseFloat(ethers.formatUnits(rawBalance, decimals));
+        currentBalanceElem.innerHTML = `${userBalance.toFixed(2)} ${symbol}`;
+        console.log('Real S2 balance loaded:', userBalance, symbol);
+
+        // --- Get ETH Balance ---
+        const rawEthBalance = await provider.getBalance(walletAddress);
+        const ethBalance = parseFloat(ethers.formatEther(rawEthBalance));
+        ethBalanceElem.innerHTML = `${ethBalance.toFixed(5)} ETH`; // Display ETH with more precision
+        console.log('Real ETH balance loaded:', ethBalance);
+
+      } catch (error) {
+        console.error('Error loading balances:', error);
+        currentBalanceElem.innerHTML = 'Error loading balance';
+        ethBalanceElem.innerHTML = 'Error loading balance'; // Update ETH elem on error
+      }
+    }
+
+    // Auth state listener - Load user wallet and all balances
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+          
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            walletAddress = data.walletAddress;
+            console.log('User wallet address:', walletAddress);
+            
+            if (walletAddress) {
+              await loadAllBalances(); // Call the updated function
+            } else {
+              currentBalanceElem.innerHTML = 'No wallet connected';
+              ethBalanceElem.innerHTML = 'No wallet connected'; // Update ETH elem
+            }
+          } else {
+            currentBalanceElem.innerHTML = 'User data not found';
+            ethBalanceElem.innerHTML = 'User data not found'; // Update ETH elem
+          }
+        } catch (error) {
+          console.error('Error loading user data:', error);
+          currentBalanceElem.innerHTML = 'Error loading user data';
+          ethBalanceElem.innerHTML = 'Error loading user data'; // Update ETH elem
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    // Helper function to show status messages
+    function showStatus(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = `status-message ${type}`;
+      statusMessage.style.display = 'block';
+      
+      if (type === 'success') {
+        statusMessage.classList.add('success-animation');
+      }
+      
+      if (type === 'success' || type === 'error') {
+        setTimeout(() => {
+          statusMessage.style.display = 'none';
+          statusMessage.classList.remove('success-animation');
+        }, 5000);
+      }
+    }
+
+    function generateTxHash() {
+      return '0x' + Math.random().toString(16).substr(2, 64);
+    }
+
+    // Form submission handling with simulated transaction
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const toAddress = document.getElementById('toAddress').value.trim();
+      const amount = document.getElementById('amount').value.trim();
+
+      // Basic validation
+      if (!toAddress || !amount) {
+        showStatus('Please fill in all fields', 'error');
+        return;
+      }
+
+      if (!toAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+        showStatus('Invalid wallet address format', 'error');
+        return;
+      }
+
+      const sendAmount = parseFloat(amount);
+      if (sendAmount <= 0) {
+        showStatus('Amount must be greater than 0', 'error');
+        return;
+      }
+
+      if (sendAmount > userBalance) {
+        showStatus('Insufficient S2 balance', 'error'); // Clarified error message
+        return;
+      }
+
+      // Start transaction simulation
+      sendButton.disabled = true;
+      sendButton.innerHTML = '<i class="fas fa-spinner loading"></i> Sending...';
+      
+      try {
+        // Simulate processing steps
+        showStatus('Initiating transaction...', 'info');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        showStatus('Broadcasting to network...', 'info');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        showStatus('Waiting for confirmation...', 'info');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Simulate successful transaction
+        const txHash = generateTxHash();
+        
+        // Update balance (simulated - in real app this would be updated by blockchain event listener)
+        userBalance -= sendAmount;
+        currentBalanceElem.textContent = `${userBalance.toFixed(2)} S2`;
+        
+        // Show success
+        showStatus(`✅ Transaction successful! Hash: ${txHash.substring(0, 10)}...`, 'success');
+        
+        // Reset form
+        document.getElementById('toAddress').value = '';
+        document.getElementById('amount').value = '';
+        
+        console.log(`Simulated transaction: Sent ${sendAmount} S2 to ${toAddress}`);
+        console.log(`New balance: ${userBalance} S2`);
+
+        // Simulate reloading ETH balance as well (since gas would be spent)
+        // In a real app, you'd wait for the tx receipt and then reload balances.
+        // For this simulation, we'll just reload both after a short delay.
+        setTimeout(loadAllBalances, 1000); // Re-fetch balances after sim completes
+        
+      } catch (error) {
+        console.error('Transaction error:', error);
+        showStatus('❌ Transaction failed. Please try again.', 'error');
+      } finally {
+        // Reset button
+        sendButton.disabled = false;
+        sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Send Tokens';
+      }
+    });
+
+    // Input validation
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.addEventListener('blur', validateInput);
+      input.addEventListener('input', clearValidation);
+    });
+
+    function validateInput(e) {
+      const input = e.target;
+      if (input.id === 'toAddress') {
+        const address = input.value.trim();
+        if (address && !address.match(/^0x[a-fA-F0-9]{40}$/)) {
+          input.style.borderColor = 'var(--gaming-danger)';
+          input.style.boxShadow = '0 0 10px rgba(255, 23, 68, 0.3)';
+        }
+      }
+      
+      if (input.id === 'amount') {
+        const amount = parseFloat(input.value);
+        if (input.value && (amount <= 0 || amount > userBalance)) {
+          input.style.borderColor = 'var(--gaming-danger)';
+          input.style.boxShadow = '0 0 10px rgba(255, 23, 68, 0.3)';
+        }
+      }
+    }
+
+    function clearValidation(e) {
+      const input = e.target;
+      input.style.borderColor = 'var(--card-border)';
+      input.style.boxShadow = 'none';
+    }
+
+    console.log('Send S2 Tokens page loaded - fetching real balances...');
+  </script>
+
+  <script type="module" src="send.js"></script>
+</body>
+</html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐦 Sky Flyer | S2 App</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #144ee3;
+      --secondary: #48c6ef;
+      --gaming-accent: #ff6b35;
+      --gaming-success: #00e676;
+      --gaming-purple: #9c27b0;
+      --gaming-gold: #ffc107;
+      --gaming-danger: #ff1744;
+      --background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 40px rgba(0,0,0,0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #8892b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      user-select: none;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      z-index: 1000;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-3px);
+    }
+
+    .game-container {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 25px;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow);
+      max-width: 480px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--gaming-purple) 50%, var(--gaming-accent) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .game-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 15px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      flex: 1;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .score-value { color: var(--secondary); }
+    .high-score-value { color: var(--gaming-gold); }
+    .coins-value { color: var(--gaming-success); }
+
+    .game-canvas {
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      margin: 20px 0;
+      cursor: pointer;
+      display: block;
+      background: linear-gradient(to bottom, #4FC3F7, #81C784);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.3);
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255, 23, 68, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-weight: 600;
+      background: rgba(72, 198, 239, 0.1);
+      color: var(--secondary);
+      border: 1px solid rgba(72, 198, 239, 0.2);
+    }
+
+    .game-over-popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      border: 2px solid var(--gaming-danger);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      z-index: 200;
+      display: none;
+    }
+
+    .game-over-popup h3 {
+      color: var(--gaming-danger);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .final-stats {
+      margin: 15px 0;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .instructions {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(72, 198, 239, 0.1);
+      border: 1px solid rgba(72, 198, 239, 0.2);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 20px;
+        margin: 10px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .stats-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="games.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Games
+  </a>
+
+  <div class="game-container">
+    <h1>🐦 Sky Flyer</h1>
+    <p class="game-subtitle">Smooth flight through the pipes!</p>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">Score</div>
+        <div class="stat-value score-value" id="currentScore">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Best</div>
+        <div class="stat-value high-score-value" id="bestScore">Loading...</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Coins</div>
+        <div class="stat-value coins-value" id="totalCoins">0</div>
+      </div>
+    </div>
+
+    <div class="status" id="gameStatus">
+      Press START to begin your smooth flight!
+    </div>
+
+    <canvas id="gameCanvas" class="game-canvas" width="400" height="400"></canvas>
+
+    <div class="controls">
+      <button class="btn start-btn" id="startButton">
+        <i class="fas fa-play"></i> Start Flight
+      </button>
+      <button class="btn reset-btn" id="resetButton">
+        <i class="fas fa-redo"></i> Reset
+      </button>
+    </div>
+
+    <div class="game-over-popup" id="gameOverPopup">
+      <h3>💥 Flight Ended!</h3>
+      <div class="final-stats">
+        <p>Score: <strong><span id="endScore">0</span></strong></p>
+        <p>Coins: <strong><span id="endCoins">0</span></strong></p>
+        <p id="recordText" style="color: var(--gaming-gold); display: none;">🏆 New Best Score!</p>
+      </div>
+      <button class="btn start-btn" onclick="startNewGame()">
+        <i class="fas fa-play"></i> Fly Again
+      </button>
+    </div>
+
+    <div class="instructions">
+      <strong>🎮 Controls:</strong><br>
+      • Press START, then click canvas or press SPACEBAR to flap<br>
+      • Fly through the wider green pipe gaps<br>
+      • Each successful pass = +1 point<br>
+      • Earn 0.1 coins per point scored
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    // Wait for authentication before starting game
+    let currentUserUID = null;
+    let gameInitialized = false;
+
+    // Get canvas and context
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Game state
+    let gameActive = false;
+    let gameStarted = false;
+    let animationId = null;
+    let highScore = 0;
+    
+    // Game objects with MUCH smoother physics
+    let bird = {
+      x: 80,
+      y: 200,
+      width: 28,
+      height: 22,
+      velocity: 0,
+      gravity: 0.25,        // Reduced from 0.35 - much gentler fall
+      jumpStrength: -4.8    // Reduced from -6.5 - smoother jumps
+    };
+    
+    let pipes = [];
+    let gameScore = 0;
+    let frameCount = 0;
+    
+    // Much more forgiving constants
+    const PIPE_WIDTH = 55;
+    const PIPE_GAP = 160;         // Increased from 120 - much wider gaps!
+    const PIPE_SPEED = 1.2;       // Reduced from 1.5 - slower movement
+    const PIPE_SPACING = 250;     // Increased from 180 - more time between pipes
+    
+    // Get DOM elements
+    const currentScoreEl = document.getElementById('currentScore');
+    const bestScoreEl = document.getElementById('bestScore');
+    const totalCoinsEl = document.getElementById('totalCoins');
+    const gameStatusEl = document.getElementById('gameStatus');
+    const startButtonEl = document.getElementById('startButton');
+    const resetButtonEl = document.getElementById('resetButton');
+    const gameOverPopupEl = document.getElementById('gameOverPopup');
+    const endScoreEl = document.getElementById('endScore');
+    const endCoinsEl = document.getElementById('endCoins');
+    const recordTextEl = document.getElementById('recordText');
+
+    // User-specific storage functions
+    function getUserStorageKey(key) {
+      return currentUserUID ? `${currentUserUID}_${key}` : key;
+    }
+
+    function loadUserHighScore() {
+      const userKey = getUserStorageKey('skyFlyerHighScore');
+      const score = parseInt(localStorage.getItem(userKey)) || 0;
+      console.log('Loading Flappy high score for user:', currentUserUID, 'Key:', userKey, 'Score:', score);
+      return score;
+    }
+
+    function saveUserHighScore(score) {
+      const userKey = getUserStorageKey('skyFlyerHighScore');
+      console.log('Saving Flappy high score for user:', currentUserUID, 'Key:', userKey, 'Score:', score);
+      localStorage.setItem(userKey, score.toString());
+    }
+
+    // Initialize game after authentication
+    function initializeGame() {
+      if (gameInitialized) return;
+      
+      // Load user-specific high score
+      highScore = loadUserHighScore();
+      bestScoreEl.textContent = highScore;
+      
+      // Initialize game
+      drawGame();
+      gameInitialized = true;
+      
+      console.log('Flappy Bird initialized for user:', currentUserUID, 'High score:', highScore);
+    }
+
+    // Authentication handler
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUserUID = user.uid;
+        initializeGame();
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+    
+    // Create pipe pair with better positioning
+    function createPipes() {
+      const minGapY = 80;     // More margin from top
+      const maxGapY = canvas.height - 80 - PIPE_GAP;  // More margin from bottom
+      const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
+      
+      pipes.push({
+        x: canvas.width,
+        gapY: gapY,
+        scored: false
+      });
+    }
+    
+    // Update game physics - much smoother
+    function updateGame() {
+      if (!gameActive || !gameStarted) return;
+      
+      // Update bird with smoother physics
+      bird.velocity += bird.gravity;
+      
+      // Terminal velocity to prevent crazy fast falling
+      if (bird.velocity > 4) bird.velocity = 4;
+      if (bird.velocity < -4) bird.velocity = -4;
+      
+      bird.y += bird.velocity;
+      
+      // Update pipes
+      for (let i = pipes.length - 1; i >= 0; i--) {
+        let pipe = pipes[i];
+        pipe.x -= PIPE_SPEED;
+        
+        // Remove pipes that are off screen
+        if (pipe.x + PIPE_WIDTH < 0) {
+          pipes.splice(i, 1);
+          continue;
+        }
+        
+        // Check for scoring - more generous scoring area
+        if (!pipe.scored && bird.x > pipe.x + PIPE_WIDTH / 2) {
+          pipe.scored = true;
+          gameScore++;
+          currentScoreEl.textContent = gameScore;
+          totalCoinsEl.textContent = Math.floor(gameScore * 0.1);
+          
+          // Visual feedback
+          currentScoreEl.style.transform = 'scale(1.2)';
+          setTimeout(() => currentScoreEl.style.transform = 'scale(1)', 200);
+        }
+        
+        // Check collisions - more forgiving collision detection
+        const birdLeft = bird.x + 2;     // Add small margin
+        const birdRight = bird.x + bird.width - 2;
+        const birdTop = bird.y + 2;
+        const birdBottom = bird.y + bird.height - 2;
+        
+        if (birdRight > pipe.x && birdLeft < pipe.x + PIPE_WIDTH) {
+          if (birdTop < pipe.gapY || birdBottom > pipe.gapY + PIPE_GAP) {
+            endGame();
+            return;
+          }
+        }
+      }
+      
+      // Check boundary collisions with small margins
+      if (bird.y < -5 || bird.y + bird.height > canvas.height + 5) {
+        endGame();
+        return;
+      }
+      
+      // Add new pipes with proper spacing
+      frameCount++;
+      if (frameCount % Math.floor(PIPE_SPACING / PIPE_SPEED) === 0) {
+        createPipes();
+      }
+    }
+    
+    // Draw everything with smooth animations
+    function drawGame() {
+      // Clear canvas with beautiful sky gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#87CEEB');
+      gradient.addColorStop(0.3, '#B0E0E6');
+      gradient.addColorStop(0.7, '#98FB98');
+      gradient.addColorStop(1, '#90EE90');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw clouds for atmosphere
+      drawClouds();
+      
+      // Draw pipes with better styling
+      ctx.fillStyle = '#2E7D32';
+      ctx.strokeStyle = '#1B5E20';
+      ctx.lineWidth = 2;
+      
+      pipes.forEach(pipe => {
+        // Top pipe with gradient
+        const topGradient = ctx.createLinearGradient(pipe.x, 0, pipe.x + PIPE_WIDTH, 0);
+        topGradient.addColorStop(0, '#4CAF50');
+        topGradient.addColorStop(1, '#2E7D32');
+        ctx.fillStyle = topGradient;
+        
+        ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
+        ctx.strokeRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
+        
+        // Bottom pipe with gradient
+        ctx.fillRect(pipe.x, pipe.gapY + PIPE_GAP, PIPE_WIDTH, canvas.height - pipe.gapY - PIPE_GAP);
+        ctx.strokeRect(pipe.x, pipe.gapY + PIPE_GAP, PIPE_WIDTH, canvas.height - pipe.gapY - PIPE_GAP);
+        
+        // Pipe caps with highlight
+        ctx.fillStyle = '#66BB6A';
+        ctx.fillRect(pipe.x - 4, pipe.gapY - 18, PIPE_WIDTH + 8, 18);
+        ctx.fillRect(pipe.x - 4, pipe.gapY + PIPE_GAP, PIPE_WIDTH + 8, 18);
+        ctx.strokeRect(pipe.x - 4, pipe.gapY - 18, PIPE_WIDTH + 8, 18);
+        ctx.strokeRect(pipe.x - 4, pipe.gapY + PIPE_GAP, PIPE_WIDTH + 8, 18);
+      });
+      
+      // Draw smooth bird with animation
+      const time = Date.now() * 0.005;
+      const wingFlap = Math.sin(time * 2) * 2;
+      
+      // Bird shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.beginPath();
+      ctx.ellipse(bird.x + bird.width/2 + 2, bird.y + bird.height + 5, bird.width/2, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Bird body with gradient
+      const birdGradient = ctx.createRadialGradient(bird.x + bird.width/2, bird.y + bird.height/2, 0, bird.x + bird.width/2, bird.y + bird.height/2, bird.width);
+      birdGradient.addColorStop(0, '#FFD54F');
+      birdGradient.addColorStop(1, '#FFC107');
+      ctx.fillStyle = birdGradient;
+      ctx.strokeStyle = '#FF8F00';
+      ctx.lineWidth = 2;
+      
+      ctx.beginPath();
+      ctx.ellipse(bird.x + bird.width/2, bird.y + bird.height/2, bird.width/2, bird.height/2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Wing with animation
+      ctx.fillStyle = '#FFA726';
+      ctx.beginPath();
+      ctx.ellipse(bird.x + bird.width/2 - 3, bird.y + bird.height/2 + wingFlap, 8, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Bird eye
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(bird.x + bird.width/2 + 6, bird.y + bird.height/2 - 4, 5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(bird.x + bird.width/2 + 7, bird.y + bird.height/2 - 3, 3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Bird beak
+      ctx.fillStyle = '#FF5722';
+      ctx.beginPath();
+      ctx.moveTo(bird.x + bird.width, bird.y + bird.height/2);
+      ctx.lineTo(bird.x + bird.width + 10, bird.y + bird.height/2 - 3);
+      ctx.lineTo(bird.x + bird.width + 10, bird.y + bird.height/2 + 3);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Draw score on canvas if playing
+      if (gameStarted && gameScore > 0) {
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.font = 'bold 28px Arial';
+        ctx.textAlign = 'center';
+        ctx.strokeText(gameScore.toString(), canvas.width/2, 50);
+        ctx.fillText(gameScore.toString(), canvas.width/2, 50);
+      }
+    }
+    
+    // Draw animated clouds
+    function drawClouds() {
+      const time = Date.now() * 0.0005;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      
+      // Moving clouds
+      drawCloud(50 + Math.sin(time) * 10, 60, 30);
+      drawCloud(200 + Math.cos(time * 0.8) * 15, 100, 25);
+      drawCloud(320 + Math.sin(time * 1.2) * 8, 80, 35);
+      drawCloud(150 + Math.cos(time * 0.6) * 12, 140, 28);
+    }
+    
+    function drawCloud(x, y, size) {
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
+      ctx.arc(x + size * 0.6, y, size * 0.6, 0, Math.PI * 2);
+      ctx.arc(x + size * 1.1, y, size * 0.4, 0, Math.PI * 2);
+      ctx.arc(x + size * 0.5, y - size * 0.4, size * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    // Game loop with smooth 60fps
+    function gameLoop() {
+      updateGame();
+      drawGame();
+      
+      if (gameActive) {
+        animationId = requestAnimationFrame(gameLoop);
+      }
+    }
+    
+    // Make bird jump smoothly
+    function jump() {
+      if (!gameActive) return;
+      
+      if (!gameStarted) {
+        gameStarted = true;
+        updateStatus('🐦 Smooth flying! Navigate through the wide gaps!', '#00e676');
+        // Add first pipe after a generous delay
+        setTimeout(() => createPipes(), 2000);
+      }
+      
+      bird.velocity = bird.jumpStrength;
+      
+      // Smooth visual feedback
+      bird.y -= 1;
+      setTimeout(() => bird.y += 1, 50);
+    }
+    
+    // Start new game
+    function startNewGame() {
+      console.log('Starting smooth flight...');
+      
+      // Reset game state
+      gameActive = true;
+      gameStarted = false;
+      gameScore = 0;
+      frameCount = 0;
+      
+      // Reset bird to safer starting position
+      bird.x = 80;
+      bird.y = 200;
+      bird.velocity = 0;
+      
+      // Clear pipes
+      pipes = [];
+      
+      // Update UI
+      currentScoreEl.textContent = '0';
+      totalCoinsEl.textContent = '0';
+      gameOverPopupEl.style.display = 'none';
+      
+      startButtonEl.innerHTML = '<i class="fas fa-gamepad"></i> Flying...';
+      startButtonEl.disabled = true;
+      
+      updateStatus('Click on canvas or press SPACE for smooth flight!', '#ffc107');
+      
+      // Start smooth game loop
+      if (animationId) cancelAnimationFrame(animationId);
+      gameLoop();
+    }
+    
+    // End game
+    function endGame() {
+      console.log('Flight ended, score:', gameScore);
+      
+      gameActive = false;
+      gameStarted = false;
+      
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+      
+      // Check for high score with user-specific storage
+      let newRecord = false;
+      if (gameScore > highScore) {
+        highScore = gameScore;
+        saveUserHighScore(highScore);
+        bestScoreEl.textContent = highScore;
+        newRecord = true;
+      }
+      
+      // Add coins to user's daily earnings
+      const coinsEarned = Math.floor(gameScore * 0.1);
+      if (window.addTodayEarnings && coinsEarned > 0) {
+        window.addTodayEarnings('arcade', coinsEarned);
+      }
+      
+      // Show game over popup
+      endScoreEl.textContent = gameScore;
+      endCoinsEl.textContent = coinsEarned;
+      recordTextEl.style.display = newRecord ? 'block' : 'none';
+      gameOverPopupEl.style.display = 'block';
+      
+      // Reset button
+      startButtonEl.innerHTML = '<i class="fas fa-play"></i> Start Flight';
+      startButtonEl.disabled = false;
+      
+      updateStatus('Flight ended! Press START for another smooth flight.', '#ff1744');
+    }
+    
+    // Reset everything
+    function resetGame() {
+      console.log('Resetting smooth flyer...');
+      
+      gameActive = false;
+      gameStarted = false;
+      
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+      
+      // Reset everything
+      bird.x = 80;
+      bird.y = 200;
+      bird.velocity = 0;
+      pipes = [];
+      gameScore = 0;
+      frameCount = 0;
+      
+      // Update UI
+      currentScoreEl.textContent = '0';
+      totalCoinsEl.textContent = '0';
+      gameOverPopupEl.style.display = 'none';
+      
+      startButtonEl.innerHTML = '<i class="fas fa-play"></i> Start Flight';
+      startButtonEl.disabled = false;
+      
+      updateStatus('Press START for your smooth flight adventure!', '#48c6ef');
+      
+      // Draw initial state
+      drawGame();
+    }
+    
+    // Update status message
+    function updateStatus(message, color) {
+      gameStatusEl.textContent = message;
+      gameStatusEl.style.color = color;
+      gameStatusEl.style.borderColor = color + '33';
+      gameStatusEl.style.background = color + '1a';
+    }
+
+    // Make functions global for HTML onclick handlers
+    window.startNewGame = startNewGame;
+    
+    // Event listeners
+    startButtonEl.addEventListener('click', startNewGame);
+    resetButtonEl.addEventListener('click', resetGame);
+    
+    canvas.addEventListener('click', (e) => {
+      e.preventDefault();
+      jump();
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        jump();
+      }
+    });
+    
+    // Prevent spacebar scrolling
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+      }
+    });
+    
+
+
+  </script>
+</body>
+</html>

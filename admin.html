@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0D0F18;
+            --bg-gradient-start: #1A1C2D;
+            --bg-gradient-end: #0D0F18;
+            --primary-accent: #8A2BE2;
+            --secondary-accent: #48C6EF;
+            --success: #00C851;
+            --warning: #ff6b35;
+            --danger: #ff4757;
+            --glass: rgba(26, 28, 45, 0.65);
+            --glass-light: rgba(26, 28, 45, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.35);
+            --text-primary: #F0F2F5;
+            --text-secondary: #A0AEC0;
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Inter', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            font-family: var(--font-secondary);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hidden { display: none !important; }
+        
+        /* --- Login / Access Denied Screen --- */
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            text-align: center;
+        }
+        .auth-container h2 { font-family: var(--font-primary); font-size: 2rem; margin-bottom: 30px; }
+        .auth-input { width: 100%; padding: 14px; border: 1px solid var(--glass-border); border-radius: 10px; font-size: 16px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary); margin-bottom: 15px; }
+        .auth-btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; background-image: linear-gradient(to right, var(--primary-accent) 0%, var(--secondary-accent) 100%); color: white; }
+        .error-message { color: var(--danger); margin-top: 15px; }
+        
+        /* --- Main Dashboard Layout --- */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1400px;
+            height: 90vh;
+            max-height: 800px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            overflow: hidden;
+        }
+        
+        /* --- Sidebar --- */
+        .sidebar {
+            background: var(--glass-light);
+            padding: 20px;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header { text-align: center; margin-bottom: 40px; }
+        .sidebar-header h2 { font-family: var(--font-primary); font-size: 1.5rem; }
+        .sidebar-nav { flex-grow: 1; }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: var(--primary-accent);
+            color: var(--text-primary);
+        }
+        .sidebar-nav a i { width: 20px; text-align: center; }
+        #logoutBtn { margin-top: auto; background-color: var(--danger); color: white; justify-content: center;}
+        
+        /* --- Main Content --- */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-track { background: transparent; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+        
+        .content-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .content-header h1 { font-family: var(--font-primary); font-size: 2.2rem; }
+        #clock { font-size: 1rem; color: var(--text-secondary); }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Stat Cards (Overview) */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .stat-card { background: var(--glass-light); padding: 25px; border-radius: 15px; border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 20px; }
+        .stat-card .icon { font-size: 2.5rem; color: var(--secondary-accent); }
+        .stat-card .info h3 { font-size: 1rem; color: var(--text-secondary); }
+        .stat-card .info p { font-family: var(--font-primary); font-size: 2.5rem; font-weight: 600; }
+        
+        /* Table (Users & Announcements) */
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th, .admin-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        .admin-table thead { background: var(--glass-light); }
+        .admin-table tbody tr:hover { background: rgba(255, 255, 255, 0.05); }
+        .admin-table .actions button { margin-right: 10px; padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-edit { background: var(--secondary-accent); color: var(--bg-dark); }
+        .btn-delete { background: var(--danger); color: white; }
+        .btn-role { background: var(--success); color: white; }
+        
+        /* Post Announcement Form */
+        .post-form {
+            background: var(--glass-light);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
+            font-size: 14px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-accent);
+            box-shadow: 0 0 10px rgba(72, 198, 239, 0.2);
+        }
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .priority-select {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        .priority-select option {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        .post-btn {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.4);
+        }
+        .post-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Success message */
+        .success-message {
+            background: linear-gradient(135deg, var(--success), #00b894);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Modal (Edit Announcement) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-gradient-start); padding: 30px; border-radius: 15px; border: 1px solid var(--glass-border); width: 100%; max-width: 600px; }
+        .modal-content h2 { margin-bottom: 20px; }
+        .modal-content .modal-actions { margin-top: 20px; text-align: right; }
+        .modal-content .modal-actions button { padding: 10px 20px; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div id="authContainer" class="auth-container">
+        <h2>Admin Login</h2>
+        <input type="email" id="emailInput" class="auth-input" placeholder="Email">
+        <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+        <button id="loginBtn" class="auth-btn">Sign In</button>
+        <p id="authError" class="error-message hidden"></p>
+    </div>
+    
+    <div id="accessDenied" class="auth-container hidden">
+        <h2><i class="fas fa-exclamation-triangle"></i> Access Denied</h2>
+        <p>You do not have permission to view this page. Please contact an administrator.</p>
+    </div>
+
+    <div id="dashboardContainer" class="dashboard-container hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-shield-halved"></i> Admin Panel</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-link active"><i class="fas fa-chart-pie"></i> Overview</a>
+                <a href="#users" class="nav-link"><i class="fas fa-users"></i> Manage Users</a>
+                <a href="#post-announcement" class="nav-link"><i class="fas fa-plus-circle"></i> Post Announcement</a>
+                <a href="#announcements" class="nav-link"><i class="fas fa-bullhorn"></i> Announcements</a>
+            </nav>
+            <a href="#" id="logoutBtn" class="sidebar-nav"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1 id="contentTitle">Overview</h1>
+                <div id="clock"></div>
+            </div>
+
+            <section id="overview" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-users"></i></div>
+                        <div class="info">
+                            <h3>Total Users</h3>
+                            <p id="totalUsers">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="info">
+                            <h3>Announcements</h3>
+                            <p id="totalAnnouncements">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-comments"></i></div>
+                        <div class="info">
+                            <h3>Chat Messages</h3>
+                            <p id="totalMessages">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="users" class="content-section">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>User ID</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="4">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- NEW: Post Announcement Section -->
+            <section id="post-announcement" class="content-section">
+                <div class="post-form">
+                    <h2 style="margin-bottom: 20px; font-family: var(--font-primary);">
+                        <i class="fas fa-bullhorn" style="margin-right: 10px; color: var(--secondary-accent);"></i>
+                        Post New Announcement
+                    </h2>
+                    
+                    <div id="successMessage" class="success-message hidden">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Announcement posted successfully!</span>
+                    </div>
+                    
+                    <form id="announcementForm">
+                        <div class="form-group">
+                            <label for="announcementTitle">Title</label>
+                            <input type="text" id="announcementTitle" class="form-input" placeholder="Enter announcement title..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="announcementContent">Content</label>
+                            <textarea id="announcementContent" class="form-input form-textarea" placeholder="Enter announcement content..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="announcementPriority">Priority Level</label>
+                            <select id="announcementPriority" class="form-input priority-select">
+                                <option value="low">📢 Low Priority - General Information</option>
+                                <option value="medium">⚠️ Medium Priority - Important Update</option>
+                                <option value="high">🚨 High Priority - Urgent/Critical</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" id="postAnnouncementBtn" class="post-btn">
+                            <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                            Post Announcement
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="announcements" class="content-section">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Priority</th>
+                            <th>Created On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="announcementsTableBody">
+                        <tr><td colspan="5">Loading announcements...</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    
+    <div id="editModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Edit Announcement</h2>
+            <input type="hidden" id="editAnnouncementId">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="editAnnouncementTitle" class="form-input" placeholder="Title">
+            </div>
+            <div class="form-group">
+                <label>Content</label>
+                <textarea id="editAnnouncementContent" class="form-input" rows="5" placeholder="Content"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button id="closeModalBtn" class="auth-btn" style="background: var(--text-secondary);">Cancel</button>
+                <button id="saveChangesBtn" class="auth-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ===================================================================
+        // FIREBASE CONFIGURATION 
+        // ===================================================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4wI4--LzSuGVjaBRPEdUOq4sPpWmaZJI",
+            authDomain: "s2-app-49eca.firebaseapp.com",
+            projectId: "s2-app-49eca",
+            storageBucket: "s2-app-49eca.appspot.com",
+            messagingSenderId: "274842107242",
+            appId: "1:274842107242:web:6df70686c39a27742e7913",
+            measurementId: "G-PH6KS2DZ61"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        console.log('Firebase initialized successfully');
+
+        // Admin UID
+        const ADMIN_UIDS = ["zqGjbKGVouWfYsdCYQtKTVwudVO2"];
+
+        // DOM elements
+        const authContainer = document.getElementById('authContainer');
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const accessDenied = document.getElementById('accessDenied');
+        const contentTitle = document.getElementById('contentTitle');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        const clockDiv = document.getElementById('clock');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const authError = document.getElementById('authError');
+        const editModal = document.getElementById('editModal');
+
+        // NEW: Announcement form elements
+        const announcementForm = document.getElementById('announcementForm');
+        const successMessage = document.getElementById('successMessage');
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            clockDiv.textContent = now.toLocaleString('en-IN', {
+                dateStyle: 'full',
+                timeStyle: 'medium',
+                timeZone: 'Asia/Kolkata'
+            });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Auth Guard
+        onAuthStateChanged(auth, async (user) => {
+            console.log('Auth state changed:', user);
+            
+            if (user) {
+                if (ADMIN_UIDS.includes(user.uid)) {
+                    console.log('Access granted - showing dashboard');
+                    authContainer.classList.add('hidden');
+                    accessDenied.classList.add('hidden');
+                    dashboardContainer.classList.remove('hidden');
+                    await initializeDashboard();
+                } else {
+                    console.log('Access denied - not admin');
+                    authContainer.classList.add('hidden');
+                    dashboardContainer.classList.add('hidden');
+                    accessDenied.classList.remove('hidden');
+                }
+            } else {
+                console.log('No user - showing login');
+                authContainer.classList.remove('hidden');
+                accessDenied.classList.add('hidden');
+                dashboardContainer.classList.add('hidden');
+            }
+        });
+        
+        loginBtn.addEventListener('click', async () => {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            authError.classList.add('hidden');
+            
+            if (!email || !password) {
+                authError.textContent = 'Please enter both email and password';
+                authError.classList.remove('hidden');
+                return;
+            }
+            
+            try {
+                console.log('Attempting login...');
+                await signInWithEmailAndPassword(auth, email, password);
+                console.log('Login successful');
+            } catch (error) {
+                console.error('Login error:', error);
+                authError.textContent = 'Invalid credentials or login failed';
+                authError.classList.remove('hidden');
+            }
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            console.log('Logging out...');
+            signOut(auth);
+        });
+
+        // Dashboard Initialization
+        async function initializeDashboard() {
+            console.log('Initializing dashboard...');
+            
+            try {
+                await loadDashboardStats();
+                await loadUsers();
+                await loadAnnouncements();
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href').substring(1);
+                        showSection(targetId);
+                    });
+                });
+                
+                console.log('Dashboard initialized successfully');
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+            }
+        }
+
+        function showSection(sectionId) {
+            contentSections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.querySelector(`.nav-link[href="#${sectionId}"]`).classList.add('active');
+            
+            contentTitle.textContent = document.querySelector(`.nav-link[href="#${sectionId}"]`).textContent;
+        }
+
+        // NEW: Post Announcement Function
+        async function postAnnouncement(title, content, priority) {
+            try {
+                const announcementsRef = collection(db, 'announcements');
+                
+                const newAnnouncement = {
+                    title: title,
+                    content: content,
+                    priority: priority,
+                    authorEmail: auth.currentUser.email,
+                    authorName: auth.currentUser.email.split('@')[0],
+                    timestamp: serverTimestamp(),
+                    createdAt: new Date()
+                };
+
+                const docRef = await addDoc(announcementsRef, newAnnouncement);
+                console.log('Announcement posted with ID:', docRef.id);
+                
+                return true;
+            } catch (error) {
+                console.error('Error posting announcement:', error);
+                throw error;
+            }
+        }
+
+        // NEW: Handle announcement form submission
+        announcementForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('announcementTitle').value.trim();
+            const content = document.getElementById('announcementContent').value.trim();
+            const priority = document.getElementById('announcementPriority').value;
+            const submitBtn = document.getElementById('postAnnouncementBtn');
+            
+            if (!title || !content) {
+                alert('Please fill in both title and content');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Posting...';
+                
+                await postAnnouncement(title, content, priority);
+                
+                // Show success message
+                successMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    successMessage.classList.add('hidden');
+                }, 3000);
+                
+                // Clear form
+                announcementForm.reset();
+                
+                // Reload announcements and stats
+                await loadAnnouncements();
+                await loadDashboardStats();
+                
+            } catch (error) {
+                alert('Failed to post announcement. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Post Announcement';
+            }
+        });
+
+        // Data Loading Functions
+        async function loadDashboardStats() {
+            console.log('Loading dashboard stats...');
+            try {
+                const usersSnapshot = await getDocs(collection(db, "users"));
+                const usersCount = usersSnapshot.size;
+                document.getElementById('totalUsers').textContent = usersCount;
+
+                const announcementsSnapshot = await getDocs(collection(db, "announcements"));
+                const announcementsCount = announcementsSnapshot.size;
+                document.getElementById('totalAnnouncements').textContent = announcementsCount;
+
+                const messagesSnapshot = await getDocs(collection(db, "messages"));
+                const messagesCount = messagesSnapshot.size;
+                document.getElementById('totalMessages').textContent = messagesCount;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('totalUsers').textContent = 'Error';
+                document.getElementById('totalAnnouncements').textContent = 'Error';
+                document.getElementById('totalMessages').textContent = 'Error';
+            }
+        }
+
+        async function loadUsers() {
+            console.log('Loading users...');
+            const tableBody = document.getElementById('usersTableBody');
+            
+            try {
+                const usersSnapshot = await getDocs(collection(db, "users"));
+                console.log('Users loaded:', usersSnapshot.size);
+                
+                let html = '';
+                usersSnapshot.forEach(doc => {
+                    const user = doc.data();
+                    const isCurrentUserAdmin = auth.currentUser.uid === doc.id;
+                    html += `
+                        <tr>
+                            <td>${user.email || 'No email'}</td>
+                            <td>${doc.id}</td>
+                            <td>${user.role || 'user'}</td>
+                            <td class="actions">
+                                <button class="btn-role" data-uid="${doc.id}" data-role="${user.role || 'user'}" ${isCurrentUserAdmin ? 'disabled' : ''}>
+                                    ${user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                if (html === '') {
+                    html = '<tr><td colspan="4">No users found</td></tr>';
+                }
+                
+                tableBody.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading users:', error);
+                tableBody.innerHTML = '<tr><td colspan="4">Error loading users</td></tr>';
+            }
+        }
+
+        async function loadAnnouncements() {
+            console.log('Loading announcements...');
+            const tableBody = document.getElementById('announcementsTableBody');
+            
+            try {
+                const announcementsSnapshot = await getDocs(collection(db, "announcements"));
+                console.log('Announcements loaded:', announcementsSnapshot.size);
+                
+                let html = '';
+                announcementsSnapshot.forEach(doc => {
+                    const post = doc.data();
+                    const date = post.timestamp ? 
+                        (post.timestamp.toDate ? post.timestamp.toDate().toLocaleDateString() : new Date(post.timestamp).toLocaleDateString()) : 
+                        'N/A';
+                    
+                    // Priority badges
+                    const priorityBadges = {
+                        high: '🚨 High',
+                        medium: '⚠️ Medium',
+                        low: '📢 Low'
+                    };
+                    
+                    html += `
+                        <tr>
+                            <td>${post.title || post.content?.substring(0, 50) || 'No title'}</td>
+                            <td>${post.authorEmail || 'Unknown'}</td>
+                            <td>${priorityBadges[post.priority] || priorityBadges.low}</td>
+                            <td>${date}</td>
+                            <td class="actions">
+                                <button class="btn-edit" data-id="${doc.id}">Edit</button>
+                                <button class="btn-delete" data-id="${doc.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                if (html === '') {
+                    html = '<tr><td colspan="5">No announcements found</td></tr>';
+                }
+                
+                tableBody.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                tableBody.innerHTML = '<tr><td colspan="5">Error loading announcements</td></tr>';
+            }
+        }
+
+        // Event Delegation for Actions
+        document.body.addEventListener('click', async (e) => {
+            // User Role Change
+            if (e.target.matches('.btn-role')) {
+                const uid = e.target.dataset.uid;
+                const currentRole = e.target.dataset.role;
+                const newRole = currentRole === 'admin' ? 'user' : 'admin';
+                if (confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
+                    try {
+                        const userDocRef = doc(db, "users", uid);
+                        await updateDoc(userDocRef, { role: newRole });
+                        loadUsers();
+                    } catch (error) {
+                        console.error('Error updating user role:', error);
+                        alert('Failed to update user role');
+                    }
+                }
+            }
+
+            // Delete Announcement
+            if (e.target.matches('.btn-delete')) {
+                const docId = e.target.dataset.id;
+                if (confirm('Are you sure you want to delete this announcement permanently?')) {
+                    try {
+                        await deleteDoc(doc(db, "announcements", docId));
+                        loadAnnouncements();
+                        loadDashboardStats(); // Update count
+                    } catch (error) {
+                        console.error('Error deleting announcement:', error);
+                        alert('Failed to delete announcement');
+                    }
+                }
+            }
+
+            // Open Edit Modal
+            if (e.target.matches('.btn-edit')) {
+                const docId = e.target.dataset.id;
+                const row = e.target.closest('tr');
+                const title = row.cells[0].textContent;
+                
+                try {
+                    const announcementsSnapshot = await getDocs(collection(db, "announcements"));
+                    const postDoc = announcementsSnapshot.docs.find(d => d.id === docId);
+                    if (postDoc) {
+                        const content = postDoc.data().content;
+                        document.getElementById('editAnnouncementId').value = docId;
+                        document.getElementById('editAnnouncementTitle').value = title;
+                        document.getElementById('editAnnouncementContent').value = content;
+                        editModal.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error('Error loading announcement for edit:', error);
+                    alert('Failed to load announcement for editing');
+                }
+            }
+        });
+        
+        // Modal Controls
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            editModal.classList.add('hidden');
+        });
+        
+        document.getElementById('saveChangesBtn').addEventListener('click', async () => {
+            const docId = document.getElementById('editAnnouncementId').value;
+            const newTitle = document.getElementById('editAnnouncementTitle').value;
+            const newContent = document.getElementById('editAnnouncementContent').value;
+            
+            try {
+                const docRef = doc(db, "announcements", docId);
+                await updateDoc(docRef, {
+                    title: newTitle,
+                    content: newContent
+                });
+
+                editModal.classList.add('hidden');
+                loadAnnouncements();
+            } catch (error) {
+                console.error('Error updating announcement:', error);
+                alert('Failed to update announcement');
+            }
+        });
+
+        // Allow Enter key for login
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+        
+        console.log('Admin dashboard script loaded');
+    </script>
+</body>
+</html>

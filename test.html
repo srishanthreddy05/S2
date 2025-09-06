@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Color Memory Matrix | S2 App</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #144ee3;
+      --secondary: #48c6ef;
+      --gaming-accent: #ff6b35;
+      --gaming-success: #00e676;
+      --gaming-purple: #9c27b0;
+      --gaming-gold: #ffc107;
+      --gaming-danger: #ff1744;
+      --gaming-cyan: #00bcd4;
+      --gaming-pink: #e91e63;
+      --background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #2a1a4a 100%);
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 40px rgba(0,0,0,0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #8892b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 10px;
+      user-select: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Neural network background */
+    .neural-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .neural-node {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gaming-cyan);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: neural-pulse 3s infinite ease-in-out;
+    }
+
+    @keyframes neural-pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.5); }
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-3px);
+    }
+
+    .game-container {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow);
+      max-width: 700px;
+      width: 100%;
+      z-index: 2;
+      margin: 60px auto 20px;
+    }
+
+    .game-container::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(156, 39, 176, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gaming-purple) 0%, var(--gaming-cyan) 50%, var(--gaming-pink) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+      text-shadow: 0 0 30px rgba(156, 39, 176, 0.5);
+    }
+
+    .game-subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 15px;
+      flex: 1;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gaming-purple), var(--gaming-cyan));
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .level-value { color: var(--gaming-purple); }
+    .score-value { color: var(--gaming-success); }
+    .streak-value { color: var(--gaming-gold); }
+    .coins-value { color: var(--gaming-cyan); }
+
+    .difficulty-selector {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .difficulty-btn {
+      padding: 10px 20px;
+      border: 2px solid;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .difficulty-btn.easy {
+      border-color: var(--gaming-success);
+      color: var(--gaming-success);
+    }
+
+    .difficulty-btn.medium {
+      border-color: var(--gaming-gold);
+      color: var(--gaming-gold);
+    }
+
+    .difficulty-btn.hard {
+      border-color: var(--gaming-danger);
+      color: var(--gaming-danger);
+    }
+
+    .difficulty-btn.expert {
+      border-color: var(--gaming-purple);
+      color: var(--gaming-purple);
+    }
+
+    .difficulty-btn.active {
+      background: currentColor;
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px currentColor;
+    }
+
+    .game-area {
+      background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      position: relative;
+      backdrop-filter: blur(15px);
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+    }
+
+    .matrix-grid {
+      display: grid;
+      gap: 8px;
+      margin: 0 auto;
+      max-width: 400px;
+    }
+
+    .matrix-cell {
+      aspect-ratio: 1;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .matrix-cell:hover {
+      transform: scale(1.05);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .matrix-cell.active {
+      border-color: #fff;
+      box-shadow: 0 0 20px currentColor;
+      transform: scale(1.1);
+    }
+
+    .matrix-cell.correct {
+      animation: correct-flash 0.5s ease;
+    }
+
+    .matrix-cell.wrong {
+      animation: wrong-shake 0.5s ease;
+    }
+
+    @keyframes correct-flash {
+      0%, 100% { background: rgba(255,255,255,0.05); }
+      50% { background: var(--gaming-success); }
+    }
+
+    @keyframes wrong-shake {
+      0%, 100% { transform: translateX(0); background: rgba(255,255,255,0.05); }
+      25% { transform: translateX(-5px); background: var(--gaming-danger); }
+      75% { transform: translateX(5px); background: var(--gaming-danger); }
+    }
+
+    .game-status {
+      margin: 15px 0;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-status::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .game-status:hover::before {
+      left: 100%;
+    }
+
+    .status-waiting {
+      background: rgba(72, 198, 239, 0.1);
+      color: var(--secondary);
+      border: 1px solid rgba(72, 198, 239, 0.2);
+    }
+
+    .status-memorize {
+      background: rgba(255, 193, 7, 0.1);
+      color: var(--gaming-gold);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+    }
+
+    .status-recall {
+      background: rgba(156, 39, 176, 0.1);
+      color: var(--gaming-purple);
+      border: 1px solid rgba(156, 39, 176, 0.2);
+    }
+
+    .status-correct {
+      background: rgba(0, 230, 118, 0.1);
+      color: var(--gaming-success);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+    }
+
+    .status-wrong {
+      background: rgba(255, 23, 68, 0.1);
+      color: var(--gaming-danger);
+      border: 1px solid rgba(255, 23, 68, 0.2);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gaming-purple), var(--gaming-cyan));
+      border-radius: 3px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, var(--gaming-purple) 0%, var(--gaming-cyan) 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255, 23, 68, 0.3);
+    }
+
+    .control-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .level-complete {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      border: 2px solid var(--gaming-success);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      z-index: 100;
+      display: none;
+    }
+
+    .level-complete h3 {
+      color: var(--gaming-success);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .level-complete p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .final-stats {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+    }
+
+    .final-stats h3 {
+      color: var(--gaming-purple);
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .final-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .final-stat {
+      text-align: center;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .final-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .final-stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gaming-cyan);
+    }
+
+    .instructions {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(156, 39, 176, 0.1);
+      border: 1px solid rgba(156, 39, 176, 0.2);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .color-sequence {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .color-hint {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      body {
+        padding: 5px;
+      }
+      
+      .game-container {
+        padding: 15px;
+        margin: 50px auto 10px;
+      }
+      
+      h1 {
+        font-size: 1.9rem;
+      }
+      
+      .stats-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .difficulty-selector {
+        gap: 8px;
+      }
+      
+      .difficulty-btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .final-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .matrix-grid {
+        gap: 6px;
+      }
+      
+      .matrix-cell {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Neural network background -->
+  <div class="neural-bg" id="neuralBg"></div>
+
+  <a href="games.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Games
+  </a>
+
+  <div class="game-container">
+    <h1>🧠 Color Memory Matrix</h1>
+    <p class="game-subtitle">Master the ultimate memory challenge!</p>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">Level</div>
+        <div class="stat-value level-value" id="level">1</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Score</div>
+        <div class="stat-value score-value" id="score">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Streak</div>
+        <div class="stat-value streak-value" id="streak">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Coins</div>
+        <div class="stat-value coins-value" id="coins">0</div>
+      </div>
+    </div>
+
+    <div class="difficulty-selector">
+      <button class="difficulty-btn easy active" data-difficulty="easy">
+        <i class="fas fa-leaf"></i> Easy
+      </button>
+      <button class="difficulty-btn medium" data-difficulty="medium">
+        <i class="fas fa-star"></i> Medium
+      </button>
+      <button class="difficulty-btn hard" data-difficulty="hard">
+        <i class="fas fa-fire"></i> Hard
+      </button>
+      <button class="difficulty-btn expert" data-difficulty="expert">
+        <i class="fas fa-crown"></i> Expert
+      </button>
+    </div>
+
+    <div class="game-status status-waiting" id="gameStatus">
+      Select difficulty and press START to challenge your memory!
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="game-area">
+      <div class="color-sequence" id="colorSequence">
+        <!-- Color hints will appear here -->
+      </div>
+      <div class="matrix-grid" id="matrixGrid">
+        <!-- Matrix cells will be generated here -->
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn start-btn" id="startBtn">
+        <i class="fas fa-brain"></i> Start Challenge
+      </button>
+      <button class="control-btn reset-btn" id="resetBtn">
+        <i class="fas fa-redo"></i> Reset
+      </button>
+    </div>
+
+    <div class="level-complete" id="levelComplete">
+      <h3>🎉 Level Complete!</h3>
+      <p id="levelMessage">Excellent memory! Advancing to next level...</p>
+      <button class="control-btn start-btn" onclick="nextLevel()">
+        <i class="fas fa-arrow-right"></i> Continue
+      </button>
+    </div>
+
+    <div class="final-stats" id="finalStats">
+      <h3>🧠 Memory Challenge Complete!</h3>
+      <div class="final-stats-grid">
+        <div class="final-stat">
+          <div class="final-stat-label">Highest Level</div>
+          <div class="final-stat-value" id="finalLevel">1</div>
+        </div>
+        <div class="final-stat">
+          <div class="final-stat-label">Total Score</div>
+          <div class="final-stat-value" id="finalScore">0</div>
+        </div>
+        <div class="final-stat">
+          <div class="final-stat-label">Best Streak</div>
+          <div class="final-stat-value" id="finalStreak">0</div>
+        </div>
+        <div class="final-stat">
+          <div class="final-stat-label">Coins Earned</div>
+          <div class="final-stat-value" id="finalCoins">0</div>
+        </div>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 10px;">
+        Exceptional cognitive performance! Coins = Level × Streak × 5
+      </p>
+    </div>
+
+    <div class="instructions">
+      <strong>🎮 How to Master the Matrix:</strong><br>
+      • <strong>Memorize Phase:</strong> Watch the colored pattern carefully<br>
+      • <strong>Recall Phase:</strong> Click cells in the exact same sequence<br>
+      • <strong>Difficulty:</strong> Easy (3×3) → Medium (4×4) → Hard (5×5) → Expert (6×6)<br>
+      • <strong>Progression:</strong> Each level adds more colors to remember<br>
+      • <strong>Scoring:</strong> Points = Level × Sequence Length × Difficulty Multiplier<br>
+      • <strong>Coins:</strong> Earned based on level completed and streak bonus
+    </div>
+  </div>
+
+  <script>
+    // Create neural network background
+    function createNeuralNetwork() {
+      const neuralBg = document.getElementById('neuralBg');
+      const nodeCount = 20;
+      
+      for (let i = 0; i < nodeCount; i++) {
+        const node = document.createElement('div');
+        node.className = 'neural-node';
+        node.style.left = Math.random() * 100 + '%';
+        node.style.top = Math.random() * 100 + '%';
+        node.style.animationDelay = Math.random() * 3 + 's';
+        neuralBg.appendChild(node);
+      }
+    }
+
+    // Game variables
+    let gameActive = false;
+    let currentLevel = 1;
+    let currentScore = 0;
+    let currentStreak = 0;
+    let bestStreak = 0;
+    let coinsEarned = 0;
+    let selectedDifficulty = 'easy';
+    let gamePhase = 'waiting'; // waiting, memorize, recall
+    let currentSequence = [];
+    let playerSequence = [];
+    let sequenceIndex = 0;
+    let matrixSize = 3;
+
+    // Difficulty settings
+    const difficulties = {
+      easy: { size: 3, colors: 4, multiplier: 1, memoryTime: 3000 },
+      medium: { size: 4, colors: 6, multiplier: 2, memoryTime: 2500 },
+      hard: { size: 5, colors: 8, multiplier: 3, memoryTime: 2000 },
+      expert: { size: 6, colors: 10, multiplier: 5, memoryTime: 1500 }
+    };
+
+    // Color palette
+    const colors = [
+      '#00e676', '#ff1744', '#2196f3', '#ffc107', 
+      '#9c27b0', '#ff6b35', '#00bcd4', '#e91e63',
+      '#4caf50', '#ff5722', '#673ab7', '#795548'
+    ];
+
+    // DOM elements
+    const levelElem = document.getElementById('level');
+    const scoreElem = document.getElementById('score');
+    const streakElem = document.getElementById('streak');
+    const coinsElem = document.getElementById('coins');
+    const gameStatusElem = document.getElementById('gameStatus');
+    const progressFillElem = document.getElementById('progressFill');
+    const matrixGridElem = document.getElementById('matrixGrid');
+    const colorSequenceElem = document.getElementById('colorSequence');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const levelCompleteElem = document.getElementById('levelComplete');
+    const finalStatsElem = document.getElementById('finalStats');
+
+    function updateDifficulty(difficulty) {
+      selectedDifficulty = difficulty;
+      matrixSize = difficulties[difficulty].size;
+      
+      // Update button states
+      document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-difficulty="${difficulty}"]`).classList.add('active');
+      
+      // Regenerate grid
+      generateMatrix();
+    }
+
+    function generateMatrix() {
+      const difficulty = difficulties[selectedDifficulty];
+      matrixGridElem.style.gridTemplateColumns = `repeat(${difficulty.size}, 1fr)`;
+      matrixGridElem.innerHTML = '';
+      
+      for (let i = 0; i < difficulty.size * difficulty.size; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'matrix-cell';
+        cell.dataset.index = i;
+        cell.addEventListener('click', () => handleCellClick(i));
+        matrixGridElem.appendChild(cell);
+      }
+    }
+
+    function generateSequence() {
+      const difficulty = difficulties[selectedDifficulty];
+      const sequenceLength = Math.min(2 + currentLevel, difficulty.size * difficulty.size);
+      const availableColors = colors.slice(0, difficulty.colors);
+      
+      currentSequence = [];
+      const usedPositions = new Set();
+      
+      for (let i = 0; i < sequenceLength; i++) {
+        let position;
+        do {
+          position = Math.floor(Math.random() * (difficulty.size * difficulty.size));
+        } while (usedPositions.has(position));
+        
+        usedPositions.add(position);
+        const color = availableColors[Math.floor(Math.random() * availableColors.length)];
+        currentSequence.push({ position, color });
+      }
+    }
+
+    function showSequence() {
+      gamePhase = 'memorize';
+      gameStatusElem.textContent = `Memorize this pattern... (${currentSequence.length} colors)`;
+      gameStatusElem.className = 'game-status status-memorize';
+      
+      // Show color hints
+      colorSequenceElem.innerHTML = '';
+      currentSequence.forEach(item => {
+        const hint = document.createElement('div');
+        hint.className = 'color-hint';
+        hint.style.background = item.color;
+        colorSequenceElem.appendChild(hint);
+      });
+      colorSequenceElem.style.opacity = '1';
+      
+      // Clear previous highlights
+      document.querySelectorAll('.matrix-cell').forEach(cell => {
+        cell.style.background = 'rgba(255,255,255,0.05)';
+        cell.style.borderColor = 'rgba(255,255,255,0.1)';
+        cell.textContent = '';
+      });
+      
+      let sequenceStep = 0;
+      const difficulty = difficulties[selectedDifficulty];
+      
+      function showNextColor() {
+        if (sequenceStep < currentSequence.length) {
+          const item = currentSequence[sequenceStep];
+          const cell = matrixGridElem.children[item.position];
+          
+          // Highlight cell
+          cell.style.background = item.color;
+          cell.style.borderColor = '#fff';
+          cell.style.boxShadow = `0 0 20px ${item.color}`;
+          cell.textContent = sequenceStep + 1;
+          cell.classList.add('active');
+          
+          sequenceStep++;
+          setTimeout(showNextColor, 800);
+        } else {
+          // Memory phase complete
+          setTimeout(() => {
+            // Clear all highlights
+            document.querySelectorAll('.matrix-cell').forEach(cell => {
+              cell.style.background = 'rgba(255,255,255,0.05)';
+              cell.style.borderColor = 'rgba(255,255,255,0.1)';
+              cell.style.boxShadow = 'none';
+              cell.textContent = '';
+              cell.classList.remove('active');
+            });
+            
+            colorSequenceElem.style.opacity = '0';
+            startRecallPhase();
+          }, difficulty.memoryTime);
+        }
+      }
+      
+      setTimeout(showNextColor, 1000);
+    }
+
+    function startRecallPhase() {
+      gamePhase = 'recall';
+      playerSequence = [];
+      sequenceIndex = 0;
+      
+      gameStatusElem.textContent = `Now click the cells in the same order! (${sequenceIndex + 1}/${currentSequence.length})`;
+      gameStatusElem.className = 'game-status status-recall';
+      
+      updateProgress();
+    }
+
+    function handleCellClick(cellIndex) {
+      if (gamePhase !== 'recall') return;
+      
+      const expectedItem = currentSequence[sequenceIndex];
+      const cell = matrixGridElem.children[cellIndex];
+      
+      if (cellIndex === expectedItem.position) {
+        // Correct!
+        cell.style.background = expectedItem.color;
+        cell.style.borderColor = '#fff';
+        cell.style.boxShadow = `0 0 20px ${expectedItem.color}`;
+        cell.textContent = sequenceIndex + 1;
+        cell.classList.add('correct');
+        
+        sequenceIndex++;
+        playerSequence.push({ position: cellIndex, color: expectedItem.color });
+        
+        if (sequenceIndex >= currentSequence.length) {
+          // Level complete!
+          setTimeout(() => completeLevel(), 500);
+        } else {
+          gameStatusElem.textContent = `Great! Continue... (${sequenceIndex + 1}/${currentSequence.length})`;
+          gameStatusElem.className = 'game-status status-correct';
+          updateProgress();
+        }
+      } else {
+        // Wrong!
+        cell.classList.add('wrong');
+        gameStatusElem.textContent = 'Wrong sequence! Game Over.';
+        gameStatusElem.className = 'game-status status-wrong';
+        
+        setTimeout(() => {
+          cell.classList.remove('wrong');
+          endGame();
+        }, 1000);
+      }
+    }
+
+    function completeLevel() {
+      const difficulty = difficulties[selectedDifficulty];
+      const levelPoints = currentLevel * currentSequence.length * difficulty.multiplier;
+      
+      currentScore += levelPoints;
+      currentStreak++;
+      bestStreak = Math.max(bestStreak, currentStreak);
+      
+      // Bonus coins for completing level
+      const levelCoins = currentLevel * 5 + currentStreak * 2;
+      coinsEarned += levelCoins;
+      
+      updateStats();
+      
+      gameStatusElem.textContent = `Level ${currentLevel} Complete! +${levelPoints} points, +${levelCoins} coins`;
+      gameStatusElem.className = 'game-status status-correct';
+      
+      // Auto-advance to next level after a short delay
+      setTimeout(() => {
+        currentLevel++;
+        
+        // Auto-increase difficulty every 3 levels
+        if (currentLevel % 3 === 1 && currentLevel > 1) {
+          const difficulties_order = ['easy', 'medium', 'hard', 'expert'];
+          const currentIndex = difficulties_order.indexOf(selectedDifficulty);
+          if (currentIndex < difficulties_order.length - 1) {
+            updateDifficulty(difficulties_order[currentIndex + 1]);
+            gameStatusElem.textContent = `Level ${currentLevel}! Difficulty increased to ${selectedDifficulty.toUpperCase()}!`;
+            gameStatusElem.className = 'game-status status-memorize';
+          }
+        }
+        
+        updateStats();
+        
+        // Show brief level intro
+        gameStatusElem.textContent = `Level ${currentLevel} - Get Ready!`;
+        gameStatusElem.className = 'game-status status-ready';
+        
+        // Start next level automatically
+        setTimeout(() => {
+          startGame();
+        }, 1500);
+        
+      }, 2000);
+    }
+
+    function nextLevel() {
+      // This function is now simplified since auto-advancement is handled in completeLevel
+      levelCompleteElem.style.display = 'none';
+      startGame();
+    }
+
+    function startGame() {
+      gameActive = true;
+      gamePhase = 'starting';
+      
+      // Clear any previous state
+      playerSequence = [];
+      sequenceIndex = 0;
+      
+      // Update UI
+      startBtn.disabled = true;
+      startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Level ' + currentLevel;
+      
+      // Hide any visible dialogs
+      levelCompleteElem.style.display = 'none';
+      finalStatsElem.style.display = 'none';
+      colorSequenceElem.style.opacity = '0';
+      
+      // Generate new sequence and matrix
+      generateSequence();
+      generateMatrix();
+      
+      // Clear all cell styles
+      document.querySelectorAll('.matrix-cell').forEach(cell => {
+        cell.style.background = 'rgba(255,255,255,0.05)';
+        cell.style.borderColor = 'rgba(255,255,255,0.1)';
+        cell.style.boxShadow = 'none';
+        cell.textContent = '';
+        cell.classList.remove('active', 'correct', 'wrong');
+      });
+      
+      // Reset progress
+      updateProgress();
+      
+      // Start sequence display after brief delay
+      setTimeout(() => {
+        if (gameActive) {
+          showSequence();
+        }
+      }, 800);
+    }
+
+    function endGame() {
+      gameActive = false;
+      gamePhase = 'waiting';
+      
+      // Show final stats
+      document.getElementById('finalLevel').textContent = currentLevel;
+      document.getElementById('finalScore').textContent = currentScore;
+      document.getElementById('finalStreak').textContent = bestStreak;
+      document.getElementById('finalCoins').textContent = coinsEarned;
+      
+      finalStatsElem.style.display = 'block';
+      
+      gameStatusElem.textContent = 'Challenge ended. Check your cognitive performance below!';
+      gameStatusElem.className = 'game-status status-waiting';
+      
+      startBtn.disabled = false;
+      startBtn.innerHTML = '<i class="fas fa-brain"></i> Start Challenge';
+      
+      // Save high scores
+      const previousBest = localStorage.getItem('memoryMatrixBest') || 0;
+      if (currentScore > previousBest) {
+        localStorage.setItem('memoryMatrixBest', currentScore);
+        console.log('New personal best!', currentScore);
+      }
+    }
+
+    function resetGame() {
+      // Stop any active game
+      gameActive = false;
+      gamePhase = 'waiting';
+      
+      // Clear any timers (if we had any)
+      // clearTimeout(...) if needed
+      
+      // Reset all game state
+      currentLevel = 1;
+      currentScore = 0;
+      currentStreak = 0;
+      bestStreak = 0;
+      coinsEarned = 0;
+      currentSequence = [];
+      playerSequence = [];
+      sequenceIndex = 0;
+      
+      // Reset UI elements
+      updateStats();
+      updateProgress();
+      generateMatrix();
+      
+      // Hide all dialogs
+      finalStatsElem.style.display = 'none';
+      levelCompleteElem.style.display = 'none';
+      colorSequenceElem.style.opacity = '0';
+      
+      // Clear all cell styles
+      document.querySelectorAll('.matrix-cell').forEach(cell => {
+        cell.style.background = 'rgba(255,255,255,0.05)';
+        cell.style.borderColor = 'rgba(255,255,255,0.1)';
+        cell.style.boxShadow = 'none';
+        cell.textContent = '';
+        cell.classList.remove('active', 'correct', 'wrong');
+      });
+      
+      // Reset status
+      gameStatusElem.textContent = 'Select difficulty and press START to challenge your memory!';
+      gameStatusElem.className = 'game-status status-waiting';
+      
+      // Reset button
+      startBtn.disabled = false;
+      startBtn.innerHTML = '<i class="fas fa-brain"></i> Start Challenge';
+    }
+
+    function updateStats() {
+      levelElem.textContent = currentLevel;
+      scoreElem.textContent = currentScore;
+      streakElem.textContent = currentStreak;
+      coinsElem.textContent = coinsEarned;
+    }
+
+    function updateProgress() {
+      const progress = gamePhase === 'recall' ? (sequenceIndex / currentSequence.length) * 100 : 0;
+      progressFillElem.style.width = progress + '%';
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', resetGame);
+
+    // Difficulty selector events
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!gameActive) {
+          updateDifficulty(btn.dataset.difficulty);
+        }
+      });
+    });
+
+    // Prevent context menu and text selection
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => {
+      if (gameActive) e.preventDefault();
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !gameActive) {
+        e.preventDefault();
+        startGame();
+      } else if (e.code === 'KeyR' && !gameActive) {
+        e.preventDefault();
+        resetGame();
+      }
+    });
+
+    // Advanced features
+    function addVisualEffects() {
+      // Add particle effects for correct answers
+      if (gamePhase === 'recall' && sequenceIndex > 0) {
+        createSuccessParticles();
+      }
+    }
+
+    function createSuccessParticles() {
+      const lastCell = matrixGridElem.children[currentSequence[sequenceIndex - 1].position];
+      const rect = lastCell.getBoundingClientRect();
+      const containerRect = matrixGridElem.getBoundingClientRect();
+      
+      for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background: var(--gaming-success);
+          border-radius: 50%;
+          left: ${rect.left - containerRect.left + rect.width / 2}px;
+          top: ${rect.top - containerRect.top + rect.height / 2}px;
+          pointer-events: none;
+          animation: particle-burst 0.6s ease-out forwards;
+        `;
+        
+        matrixGridElem.appendChild(particle);
+        setTimeout(() => particle.remove(), 600);
+      }
+    }
+
+    // Add particle burst animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes particle-burst {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(${Math.random() * 60 - 30}px, ${Math.random() * 60 - 30}px) scale(0);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Performance tracking
+    let gameStartTime = 0;
+    let reactionTimes = [];
+
+    function trackPerformance() {
+      if (gamePhase === 'recall' && sequenceIndex === 1) {
+        gameStartTime = Date.now();
+      }
+      
+      if (gamePhase === 'recall' && sequenceIndex > 0) {
+        const reactionTime = Date.now() - gameStartTime;
+        reactionTimes.push(reactionTime);
+        
+        // Show performance hints
+        const avgReaction = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+        if (avgReaction < 800) {
+          // Fast reactions - bonus points
+          currentScore += Math.floor(currentLevel / 2);
+        }
+      }
+    }
+
+    // Initialize game
+    createNeuralNetwork();
+    generateMatrix();
+    updateStats();
+    
+    console.log('Color Memory Matrix - Pro Level Challenge Ready!');
+    console.log('Keyboard shortcuts: SPACE = Start, R = Reset');
+  </script>
+</body>
+</html>

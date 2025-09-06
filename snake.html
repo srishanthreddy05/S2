@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐍 Snake Challenge | S2 App</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #144ee3;
+      --secondary: #48c6ef;
+      --gaming-accent: #ff6b35;
+      --gaming-success: #00e676;
+      --gaming-purple: #9c27b0;
+      --gaming-gold: #ffc107;
+      --gaming-danger: #ff1744;
+      --background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 40px rgba(0,0,0,0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #8892b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      user-select: none;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-3px);
+    }
+
+    .game-container {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .game-header {
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gaming-success) 0%, var(--secondary) 50%, var(--gaming-purple) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .game-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+      gap: 15px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 15px 20px;
+      flex: 1;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gaming-success);
+    }
+
+    .high-score {
+      color: var(--gaming-gold) !important;
+    }
+
+    .coins-earned {
+      color: var(--gaming-accent) !important;
+    }
+
+    .game-board {
+      position: relative;
+      margin: 20px auto;
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+      overflow: hidden;
+      box-shadow: 
+        inset 0 2px 10px rgba(0,0,0,0.5),
+        0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    #gameCanvas {
+      display: block;
+      background: transparent;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 25px 0;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.3);
+    }
+
+    .pause-btn {
+      background: linear-gradient(135deg, var(--gaming-gold) 0%, #ffb300 100%);
+      color: #000;
+      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255, 23, 68, 0.3);
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .mobile-controls {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 25px;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .direction-btn {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .direction-btn:hover:not(:disabled) {
+      background: rgba(255,255,255,0.15);
+      transform: scale(1.1);
+    }
+
+    .direction-btn:active {
+      transform: scale(0.95);
+    }
+
+    #upBtn { grid-column: 2; }
+    #leftBtn { grid-column: 1; grid-row: 2; }
+    #rightBtn { grid-column: 3; grid-row: 2; }
+    #downBtn { grid-column: 2; grid-row: 3; }
+
+    .instructions {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(72, 198, 239, 0.1);
+      border: 1px solid rgba(72, 198, 239, 0.2);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .game-over {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      border: 2px solid var(--gaming-danger);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      z-index: 100;
+      display: none;
+    }
+
+    .game-over h3 {
+      color: var(--gaming-danger);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .final-stats {
+      margin: 15px 0;
+      color: var(--text-secondary);
+    }
+
+    /* Reward notification */
+    .reward-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 230, 118, 0.4);
+      z-index: 1000;
+      display: none;
+      text-align: center;
+      backdrop-filter: blur(20px);
+    }
+
+    .reward-notification.show {
+      display: block;
+      animation: rewardPop 2s ease-in-out;
+    }
+
+    @keyframes rewardPop {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+      20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+      80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+    }
+
+    /* Claim button */
+    .claim-btn {
+      background: linear-gradient(135deg, var(--gaming-gold) 0%, #ffb300 100%);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+    }
+
+    .claim-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+    }
+
+    .claim-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Pending rewards indicator */
+    .pending-rewards {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .pending-rewards.show {
+      display: block;
+    }
+
+    .pending-title {
+      color: var(--gaming-gold);
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 20px;
+        margin: 10px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .mobile-controls {
+        display: grid;
+      }
+      
+      .stats-container {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .instructions {
+        font-size: 0.9rem;
+      }
+    }
+
+    .game-status {
+      margin-bottom: 15px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      background: rgba(72, 198, 239, 0.1);
+      color: var(--secondary);
+      border: 1px solid rgba(72, 198, 239, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <a href="games.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Games
+  </a>
+
+  <!-- Reward Notification -->
+  <div class="reward-notification" id="rewardNotification">
+    <h3><i class="fas fa-coins"></i> Reward Earned!</h3>
+    <p id="rewardMessage"></p>
+  </div>
+
+  <div class="game-container">
+    <div class="game-header">
+      <h1>🐍 Snake Challenge</h1>
+      <p class="game-subtitle">Collect food and grow your snake!</p>
+    </div>
+
+    <!-- Pending Rewards Section -->
+    <div class="pending-rewards" id="pendingRewards">
+      <div class="pending-title">
+        <i class="fas fa-clock"></i>
+        Pending Rewards: <span id="pendingAmount">0</span> coins
+      </div>
+      <button class="claim-btn" id="claimBtn" onclick="claimPendingRewards()">
+        <i class="fas fa-hand-holding-usd"></i> Claim All Rewards
+      </button>
+    </div>
+
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-label">Score</div>
+        <div class="stat-value" id="score">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">High Score</div>
+        <div class="stat-value high-score" id="highScore">Loading...</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Coins Earned</div>
+        <div class="stat-value coins-earned" id="coinsEarned">0</div>
+      </div>
+    </div>
+
+    <div class="game-status" id="gameStatus">
+      Press Start and use arrow keys to move!
+    </div>
+
+    <div class="game-board">
+      <canvas id="gameCanvas" width="400" height="400"></canvas>
+      
+      <div class="game-over" id="gameOver">
+        <h3>🎮 Game Over!</h3>
+        <div class="final-stats">
+          <p>Final Score: <span id="finalScore">0</span></p>
+          <p>Coins Earned: <span id="finalCoins">0</span></p>
+        </div>
+        <div id="rewardStatus" style="margin: 15px 0; color: var(--gaming-success); font-weight: 600;"></div>
+        <button class="control-btn start-btn" onclick="startGame()">
+          <i class="fas fa-play"></i> Play Again
+        </button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn start-btn" id="startBtn" onclick="startGame()">
+        <i class="fas fa-play"></i> Start Game
+      </button>
+      <button class="control-btn pause-btn" id="pauseBtn" onclick="togglePause()" disabled>
+        <i class="fas fa-pause"></i> Pause
+      </button>
+      <button class="control-btn reset-btn" onclick="resetGame()">
+        <i class="fas fa-redo"></i> Reset
+      </button>
+    </div>
+
+    <div class="mobile-controls" id="mobileControls">
+      <button class="direction-btn" id="upBtn"><i class="fas fa-arrow-up"></i></button>
+      <button class="direction-btn" id="leftBtn"><i class="fas fa-arrow-left"></i></button>
+      <button class="direction-btn" id="rightBtn"><i class="fas fa-arrow-right"></i></button>
+      <button class="direction-btn" id="downBtn"><i class="fas fa-arrow-down"></i></button>
+    </div>
+
+    <div class="instructions">
+      <strong>🎮 How to Play:</strong><br>
+      • Press Start Game, then use arrow keys to move<br>
+      • Eat red food to grow and increase your score<br>
+      • Avoid hitting walls or your own tail<br>
+      • Earn coins based on your score (Score × 0.1)<br>
+      • Choose instant transfer or collect & claim later!
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    // Configuration - Choose your reward system
+    const REWARD_SYSTEM = {
+      type: 'batch', // 'instant' or 'batch'
+      apiUrl: 'http://localhost:3010' // Your backend URL
+    };
+
+    // Wait for authentication before starting game
+    let currentUser = null;
+    let gameInitialized = false;
+
+    // Game variables
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const gridSize = 20;
+    const tileCount = canvas.width / gridSize;
+    
+    let snake = [{x: 10, y: 10}];
+    let food = {};
+    let dx = 0;
+    let dy = 0;
+    let score = 0;
+    let gameRunning = false;
+    let gamePaused = false;
+    let gameLoop;
+    let gameStarted = false;
+    let highScore = 0;
+    
+    // UI elements
+    const scoreElement = document.getElementById('score');
+    const highScoreElement = document.getElementById('highScore');
+    const coinsElement = document.getElementById('coinsEarned');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const gameOverDiv = document.getElementById('gameOver');
+    const finalScoreElement = document.getElementById('finalScore');
+    const finalCoinsElement = document.getElementById('finalCoins');
+    const gameStatusElement = document.getElementById('gameStatus');
+    const rewardNotification = document.getElementById('rewardNotification');
+    const rewardMessage = document.getElementById('rewardMessage');
+    const pendingRewards = document.getElementById('pendingRewards');
+    const pendingAmount = document.getElementById('pendingAmount');
+    const claimBtn = document.getElementById('claimBtn');
+
+    // User-specific storage functions
+    function getUserStorageKey(key) {
+      return currentUser ? `${currentUser.uid}_${key}` : key;
+    }
+
+    function loadUserHighScore() {
+      const userKey = getUserStorageKey('snakeHighScore');
+      return parseInt(localStorage.getItem(userKey)) || 0;
+    }
+
+    function saveUserHighScore(score) {
+      const userKey = getUserStorageKey('snakeHighScore');
+      localStorage.setItem(userKey, score.toString());
+    }
+
+    // Wallet and reward functions
+    async function getUserWallet() {
+      if (!currentUser) return null;
+      
+      try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        return userDoc.exists ? userDoc.data().walletAddress : null;
+      } catch (error) {
+        console.error('Error getting user wallet:', error);
+        return null;
+      }
+    }
+
+    async function submitScore(score) {
+      const wallet = await getUserWallet();
+      if (!wallet) {
+        console.error('No wallet found for user');
+        return { success: false, error: 'Wallet not found' };
+      }
+
+      try {
+        const endpoint = REWARD_SYSTEM.type === 'instant' ? '/submit-score' : '/add-pending-reward';
+        
+        const response = await fetch(`${REWARD_SYSTEM.apiUrl}${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            wallet,
+            gameType: 'snake',
+            score
+          })
+        });
+
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error('Error submitting score:', error);
+        return { success: false, error: 'Network error' };
+      }
+    }
+
+    async function claimPendingRewards() {
+      const wallet = await getUserWallet();
+      if (!wallet) return;
+
+      try {
+        claimBtn.disabled = true;
+        claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Claiming...';
+
+        const response = await fetch(`${REWARD_SYSTEM.apiUrl}/claim-game-rewards`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showRewardNotification(`Claimed ${result.totalClaimed} coins! TX: ${result.txHash.substring(0, 10)}...`);
+          updatePendingRewards();
+        } else {
+          console.error('Claim failed:', result.error);
+        }
+      } catch (error) {
+        console.error('Error claiming rewards:', error);
+      } finally {
+        claimBtn.disabled = false;
+        claimBtn.innerHTML = '<i class="fas fa-hand-holding-usd"></i> Claim All Rewards';
+      }
+    }
+
+    async function updatePendingRewards() {
+      const wallet = await getUserWallet();
+      if (!wallet) return;
+
+      try {
+        const response = await fetch(`${REWARD_SYSTEM.apiUrl}/game-stats/${wallet}`);
+        const stats = await response.json();
+
+        if (stats.totalPending > 0) {
+          pendingAmount.textContent = stats.totalPending;
+          pendingRewards.classList.add('show');
+        } else {
+          pendingRewards.classList.remove('show');
+        }
+      } catch (error) {
+        console.error('Error updating pending rewards:', error);
+      }
+    }
+
+    function showRewardNotification(message) {
+      rewardMessage.textContent = message;
+      rewardNotification.classList.add('show');
+      setTimeout(() => {
+        rewardNotification.classList.remove('show');
+      }, 2000);
+    }
+
+    // Initialize game after authentication
+    function initializeGame() {
+      if (gameInitialized) return;
+      
+      // Load user-specific high score
+      highScore = loadUserHighScore();
+      highScoreElement.textContent = highScore;
+      
+      // Initialize game
+      generateFood();
+      drawGame();
+      gameInitialized = true;
+      
+      // Update pending rewards display
+      if (REWARD_SYSTEM.type === 'batch') {
+        updatePendingRewards();
+      }
+      
+      console.log('Game initialized for user:', currentUser.uid, 'High score:', highScore);
+    }
+
+    // Authentication handler
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        initializeGame();
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    // Generate random food position
+    function generateFood() {
+      food = {
+        x: Math.floor(Math.random() * tileCount),
+        y: Math.floor(Math.random() * tileCount)
+      };
+      
+      // Make sure food doesn't spawn on snake
+      for (let segment of snake) {
+        if (segment.x === food.x && segment.y === food.y) {
+          generateFood();
+          return;
+        }
+      }
+    }
+    
+    // Draw game elements
+    function drawGame() {
+      // Clear canvas with gradient background
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, 'rgba(15, 15, 35, 0.8)');
+      gradient.addColorStop(1, 'rgba(26, 26, 46, 0.8)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= tileCount; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * gridSize, 0);
+        ctx.lineTo(i * gridSize, canvas.height);
+        ctx.moveTo(0, i * gridSize);
+        ctx.lineTo(canvas.width, i * gridSize);
+        ctx.stroke();
+      }
+      
+      // Draw snake
+      ctx.fillStyle = '#00e676';
+      ctx.shadowColor = '#00e676';
+      ctx.shadowBlur = 10;
+      
+      snake.forEach((segment, index) => {
+        if (index === 0) {
+          // Snake head - brighter
+          ctx.fillStyle = '#00e676';
+        } else {
+          // Snake body - gradient effect
+          const alpha = 1 - (index * 0.1);
+          ctx.fillStyle = `rgba(0, 230, 118, ${Math.max(alpha, 0.3)})`;
+        }
+        
+        ctx.fillRect(segment.x * gridSize + 1, segment.y * gridSize + 1, gridSize - 2, gridSize - 2);
+      });
+      
+      ctx.shadowBlur = 0;
+      
+      // Draw food with pulsing effect
+      ctx.fillStyle = '#ff1744';
+      ctx.shadowColor = '#ff1744';
+      ctx.shadowBlur = 15;
+      
+      const pulse = Math.sin(Date.now() * 0.005) * 0.1 + 1;
+      const foodSize = (gridSize - 4) * pulse;
+      const offset = (gridSize - foodSize) / 2;
+      
+      ctx.fillRect(
+        food.x * gridSize + offset,
+        food.y * gridSize + offset,
+        foodSize,
+        foodSize
+      );
+      
+      ctx.shadowBlur = 0;
+    }
+    
+    // Update game state
+    function updateGame() {
+      if (!gameRunning || gamePaused) return;
+      
+      // Don't move until player presses a direction key
+      if (!gameStarted) return;
+      
+      // Move snake head
+      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+      
+      // Check wall collision
+      if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+        endGame();
+        return;
+      }
+      
+      // Check self collision
+      for (let segment of snake) {
+        if (head.x === segment.x && head.y === segment.y) {
+          endGame();
+          return;
+        }
+      }
+      
+      snake.unshift(head);
+      
+      // Check food collision
+      if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        scoreElement.textContent = score;
+        
+        // Update coins (score × 0.1)
+        const coins = Math.floor(score * 0.1);
+        coinsElement.textContent = coins;
+        
+        generateFood();
+      } else {
+        snake.pop();
+      }
+    }
+    
+    // Start game
+    function startGame() {
+      if (gameRunning && !gamePaused) return;
+      
+      if (!gameRunning) {
+        // Initialize new game
+        snake = [{x: 10, y: 10}];
+        dx = 0;
+        dy = 0;
+        score = 0;
+        gameStarted = false;
+        scoreElement.textContent = score;
+        coinsElement.textContent = 0;
+        generateFood();
+        gameOverDiv.style.display = 'none';
+      }
+      
+      gameRunning = true;
+      gamePaused = false;
+      
+      startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Waiting...';
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+      pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+      
+      gameStatusElement.textContent = 'Use arrow keys to start moving!';
+      gameStatusElement.style.background = 'rgba(255, 193, 7, 0.1)';
+      gameStatusElement.style.color = '#ffc107';
+      gameStatusElement.style.borderColor = 'rgba(255, 193, 7, 0.2)';
+      
+      gameLoop = setInterval(() => {
+        updateGame();
+        drawGame();
+      }, 120);
+      
+      drawGame();
+    }
+    
+    // Toggle pause
+    function togglePause() {
+      if (!gameRunning) return;
+      
+      gamePaused = !gamePaused;
+      
+      if (gamePaused) {
+        clearInterval(gameLoop);
+        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+        gameStatusElement.textContent = 'Game Paused';
+        gameStatusElement.style.background = 'rgba(255, 107, 53, 0.1)';
+        gameStatusElement.style.color = '#ff6b35';
+        gameStatusElement.style.borderColor = 'rgba(255, 107, 53, 0.2)';
+      } else {
+        gameLoop = setInterval(() => {
+          updateGame();
+          drawGame();
+        }, 120);
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        gameStatusElement.textContent = gameStarted ? 'Playing...' : 'Use arrow keys to start moving!';
+        gameStatusElement.style.background = 'rgba(0, 230, 118, 0.1)';
+        gameStatusElement.style.color = '#00e676';
+        gameStatusElement.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+      }
+    }
+    
+    // End game
+    async function endGame() {
+      gameRunning = false;
+      gamePaused = false;
+      gameStarted = false;
+      clearInterval(gameLoop);
+      
+      // Update high score
+      if (score > highScore) {
+        highScore = score;
+        saveUserHighScore(highScore);
+        highScoreElement.textContent = highScore;
+      }
+      
+      // Calculate and submit coins
+      const coinsEarned = Math.floor(score * 0.1);
+      
+      if (coinsEarned > 0) {
+        const rewardStatus = document.getElementById('rewardStatus');
+        rewardStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing rewards...';
+        
+        const result = await submitScore(score);
+        
+        if (result.success) {
+          if (REWARD_SYSTEM.type === 'instant') {
+            rewardStatus.innerHTML = `<i class="fas fa-check"></i> ${coinsEarned} coins sent to wallet!`;
+            showRewardNotification(`Earned ${coinsEarned} coins! TX: ${result.txHash.substring(0, 10)}...`);
+          } else {
+            rewardStatus.innerHTML = `<i class="fas fa-clock"></i> ${coinsEarned} coins added to pending rewards!`;
+            showRewardNotification(`${coinsEarned} coins added to pending rewards!`);
+            updatePendingRewards();
+          }
+        } else {
+          rewardStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Reward processing failed`;
+          console.error('Reward failed:', result.error);
+        }
+      }
+      
+      // Show game over screen
+      finalScoreElement.textContent = score;
+      finalCoinsElement.textContent = coinsEarned;
+      gameOverDiv.style.display = 'block';
+      
+      // Reset buttons
+      startBtn.innerHTML = '<i class="fas fa-play"></i> Start Game';
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+      
+      gameStatusElement.textContent = 'Game Over! Press Start to play again.';
+      gameStatusElement.style.background = 'rgba(255, 23, 68, 0.1)';
+      gameStatusElement.style.color = '#ff1744';
+      gameStatusElement.style.borderColor = 'rgba(255, 23, 68, 0.2)';
+    }
+    
+    // Reset game
+    function resetGame() {
+      gameRunning = false;
+      gamePaused = false;
+      gameStarted = false;
+      clearInterval(gameLoop);
+      
+      snake = [{x: 10, y: 10}];
+      dx = 0;
+      dy = 0;
+      score = 0;
+      scoreElement.textContent = score;
+      coinsElement.textContent = 0;
+      generateFood();
+      drawGame();
+      gameOverDiv.style.display = 'none';
+      
+      startBtn.innerHTML = '<i class="fas fa-play"></i> Start Game';
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+      
+      gameStatusElement.textContent = 'Press Start and use arrow keys to move!';
+      gameStatusElement.style.background = 'rgba(72, 198, 239, 0.1)';
+      gameStatusElement.style.color = '#48c6ef';
+      gameStatusElement.style.borderColor = 'rgba(72, 198, 239, 0.2)';
+    }
+    
+    // Make functions global for HTML onclick handlers
+    window.startGame = startGame;
+    window.togglePause = togglePause;
+    window.resetGame = resetGame;
+    window.claimPendingRewards = claimPendingRewards;
+    
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (!gameRunning || gamePaused) return;
+      
+      let moved = false;
+      
+      switch(e.key) {
+        case 'ArrowUp':
+          if (dy !== 1) { dx = 0; dy = -1; moved = true; }
+          break;
+        case 'ArrowDown':
+          if (dy !== -1) { dx = 0; dy = 1; moved = true; }
+          break;
+        case 'ArrowLeft':
+          if (dx !== 1) { dx = -1; dy = 0; moved = true; }
+          break;
+        case 'ArrowRight':
+          if (dx !== -1) { dx = 1; dy = 0; moved = true; }
+          break;
+        case ' ':
+          e.preventDefault();
+          togglePause();
+          break;
+      }
+      
+      // Start game movement when first direction is pressed
+      if (moved && !gameStarted) {
+        gameStarted = true;
+        startBtn.innerHTML = '<i class="fas fa-gamepad"></i> Playing';
+        gameStatusElement.textContent = 'Playing... Collect the red food!';
+        gameStatusElement.style.background = 'rgba(0, 230, 118, 0.1)';
+        gameStatusElement.style.color = '#00e676';
+        gameStatusElement.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+      }
+    });
+    
+    // Mobile controls
+    document.getElementById('upBtn').addEventListener('click', () => {
+      if (gameRunning && !gamePaused && dy !== 1) { 
+        dx = 0; dy = -1; 
+        if (!gameStarted) {
+          gameStarted = true;
+          startBtn.innerHTML = '<i class="fas fa-gamepad"></i> Playing';
+          gameStatusElement.textContent = 'Playing... Collect the red food!';
+          gameStatusElement.style.background = 'rgba(0, 230, 118, 0.1)';
+          gameStatusElement.style.color = '#00e676';
+          gameStatusElement.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+        }
+      }
+    });
+    
+    document.getElementById('downBtn').addEventListener('click', () => {
+      if (gameRunning && !gamePaused && dy !== -1) { 
+        dx = 0; dy = 1;
+        if (!gameStarted) {
+          gameStarted = true;
+          startBtn.innerHTML = '<i class="fas fa-gamepad"></i> Playing';
+          gameStatusElement.textContent = 'Playing... Collect the red food!';
+          gameStatusElement.style.background = 'rgba(0, 230, 118, 0.1)';
+          gameStatusElement.style.color = '#00e676';
+          gameStatusElement.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+        }
+      }
+    });
+    
+    document.getElementById('leftBtn').addEventListener('click', () => {
+      if (gameRunning && !gamePaused && dx !== 1) { 
+        dx = -1; dy = 0;
+        if (!gameStarted) {
+          gameStarted = true;
+          startBtn.innerHTML = '<i class="fas fa-gamepad"></i> Playing';
+          gameStatusElement.textContent = 'Playing... Collect the red food!';
+          gameStatusElement.style.background = 'rgba(0, 230, 118, 0.1)';
+          gameStatusElement.style.color = '#00e676';
+          gameStatusElement.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+        }
+      }
+    });
+    
+    document.getElementById('rightBtn').addEventListener('click', () => {
+      if (gameRunning && !gamePaused && dx !== -1) { 
+        dx = 1; dy = 0;
+        if (!gameStarted) {
+          gameStarted = true;
+          startBtn.innerHTML = '<i class="fas fa-gamepad"></i> Playing';
+          gameStatusElement.textContent = 'Playing... Collect the red food!';
+          gameStatusElement.style.background = 'rgba(0, 230, 118, 0.1)';
+          gameStatusElement.style.color = '#00e676';
+          gameStatusElement.style.borderColor = 'rgba(0, 230, 118, 0.2)';
+        }
+      }
+    });
+    
+    // Prevent scrolling with arrow keys
+    window.addEventListener("keydown", function(e) {
+      if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+      }
+    }, false);
+    
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S2 Token Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --bg-dark: #0D0F18;
+  --bg-gradient-start: #1A1C2D;
+  --bg-gradient-end: #0D0F18;
+  --primary-accent: #8A2BE2;
+  --secondary-accent: #48C6EF;
+  --success: #00C851;
+  --warning: #ff6b35;
+  --glass: rgba(26, 28, 45, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.35);
+  --text-primary: #F0F2F5;
+  --text-secondary: #A0AEC0;
+  --font-primary: 'Poppins', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  background-image: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  font-family: var(--font-secondary);
+  color: var(--text-primary);
+  padding: 40px 20px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Aurora Background Effect */
+body::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  height: 60vh;
+  max-width: 700px;
+  max-height: 700px;
+  background-image: radial-gradient(circle, var(--primary-accent), transparent 60%);
+  opacity: 0.15;
+  filter: blur(120px);
+  animation: aurora-pulse 15s infinite alternate ease-in-out;
+  z-index: 0;
+}
+
+@keyframes aurora-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.1; }
+  100% { transform: translate(-45%, -55%) scale(1.2); opacity: 0.2; }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-family: var(--font-primary);
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  margin-bottom: 30px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+}
+
+.search-section {
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.search-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.input-group {
+  flex: 1;
+  min-width: 300px;
+}
+
+.wallet-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: var(--font-secondary);
+}
+
+.wallet-input:focus {
+  border-color: var(--secondary-accent);
+  box-shadow: 0 0 20px rgba(72, 198, 239, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wallet-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.btn {
+  padding: 16px 28px;
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-size: 200% auto;
+  font-family: var(--font-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background-image: linear-gradient(to right, var(--primary-accent) 0%, var(--secondary-accent) 51%, var(--primary-accent) 100%);
+}
+
+.btn-secondary {
+  background: #33374C;
+}
+
+.btn:hover:not(:disabled) {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.btn:disabled {
+  background-image: none;
+  background-color: #33374C;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.controls-section {
+  padding: 25px 30px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.page-select {
+  padding: 10px 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: var(--font-secondary);
+}
+
+.page-select:focus {
+  border-color: var(--secondary-accent);
+  box-shadow: 0 0 10px rgba(72, 198, 239, 0.2);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.page-info {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.status {
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 12px 20px;
+  background: rgba(138, 43, 226, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-accent);
+  margin-top: 15px;
+}
+
+.status.error {
+  background: rgba(255, 107, 53, 0.1);
+  border-left-color: var(--warning);
+  color: #ff8e53;
+}
+
+.table-section {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 30px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.table-header h3 {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.table-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.table-container {
+  overflow-x: auto;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.transactions-table th {
+  background: var(--glass);
+  color: var(--text-primary);
+  padding: 20px 16px;
+  font-weight: 600;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-primary);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.transactions-table td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.transactions-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.transactions-table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.transactions-table tr:nth-child(even):hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.address-code {
+  font-family: 'Monaco', 'Menlo', monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.amount-cell {
+  text-align: right;
+  font-weight: 600;
+  font-family: 'Monaco', monospace;
+  color: var(--text-primary);
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.in {
+  background: linear-gradient(135deg, var(--success), #00e676);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 200, 81, 0.3);
+}
+
+.out {
+  background: linear-gradient(135deg, var(--warning), #ff8e53);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+
+.mut {
+  background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+  color: white;
+  box-shadow: 0 2px 8px rgba(138, 43, 226, 0.3);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 30px;
+  color: var(--text-secondary);
+}
+
+.empty-state h3 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid var(--secondary-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px 15px;
+  }
+  
+  .header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .search-row {
+    flex-direction: column;
+  }
+  
+  .input-group {
+    min-width: unset;
+  }
+  
+  .controls-section {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .transactions-table {
+    font-size: 0.8rem;
+  }
+  
+  .transactions-table th,
+  .transactions-table td {
+    padding: 12px 8px;
+  }
+  
+  .back-btn {
+    margin-bottom: 20px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>S2 Transfers</h1>
+    <p>Track your S2 token transactions</p>
+  </div>
+  
+  <a href="dashboard.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+  </a>
+
+  <div class="card fade-in">
+    <div class="search-section">
+      <div class="search-row">
+        <div class="input-group">
+          <input id="wallet" class="wallet-input" placeholder="Enter wallet address (0x...)" type="text">
+        </div>
+        <button id="load" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+          <span>Load Transactions</span>
+        </button>
+      </div>
+      <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <div class="controls-section">
+      <label style="display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-weight: 500;">
+        <span>Items per page:</span>
+        <select id="pageSize" class="page-select">
+          <option>10</option>
+          <option selected>25</option>
+          <option>50</option>
+          <option>100</option>
+        </select>
+      </label>
+      <div class="pagination">
+        <button id="prevTok" class="btn btn-secondary">
+          <i class="fas fa-chevron-left"></i>
+          Previous
+        </button>
+        <span id="pageTok" class="page-info">Page 1</span>
+        <button id="nextTok" class="btn btn-secondary">
+          Next
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <h3><i class="fas fa-exchange-alt" style="margin-right: 10px; color: var(--secondary-accent);"></i>S2 Token Transfers</h3>
+        <p>Real-time transaction history</p>
+      </div>
+      <div class="table-container">
+        <table id="tokTable" class="transactions-table">
+          <thead>
+            <tr>
+              <th><i class="fas fa-clock" style="margin-right: 8px;"></i>Timestamp</th>
+              <th><i class="fas fa-arrow-up" style="margin-right: 8px;"></i>From</th>
+              <th><i class="fas fa-arrow-down" style="margin-right: 8px;"></i>To</th>
+              <th><i class="fas fa-coins" style="margin-right: 8px;"></i>Amount</th>
+              <th><i class="fas fa-exchange-alt" style="margin-right: 8px;"></i>Direction</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="5" class="empty-state">
+                <h3>Ready to explore</h3>
+                <p>Enter a wallet address above to view S2 token transactions</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// ---------- Firebase imports ----------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ---------- Firebase config ----------
+const firebaseConfig = {
+  apiKey: "AIzaSyD4wI4--LzSuGVjaBRPEdUOq4sPpWmaZJI",
+  authDomain: "s2-app-49eca.firebaseapp.com",
+  projectId: "s2-app-49eca",
+  storageBucket: "s2-app-49eca.appspot.com",
+  messagingSenderId: "274842107242",
+  appId: "1:274842107242:web:6df70686c39a27742e7913",
+  measurementId: "G-PH6KS2DZ61"
+};
+
+// Initialize Firebase with error handling
+let app, auth, db;
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+} catch (error) {
+  console.warn('Firebase initialization failed:', error);
+  showStatus('⚠️ Firebase connection unavailable - some features may be limited', true);
+}
+
+// ---------- Config ----------
+const ETHERSCAN_API_KEY = "RH8J9Z6GTT41PPQ7SEAMHIIS55IEGWFYFD";
+const TOKEN_CONTRACT = "0x56EaaF87a9f4B2cC413DF472B23950b2a8Db2FCC";
+const ETHERSCAN_BASE = "https://api-sepolia.etherscan.io/api";
+
+// ---------- Helpers ----------
+const $ = (id) => document.getElementById(id);
+
+function formatToken(valueStr, decimalsStr) {
+  try {
+    const value = BigInt(valueStr || "0");
+    const decimals = Number(decimalsStr || 18);
+    const base = BigInt(10) ** BigInt(decimals);
+    const whole = value / base;
+    const frac = value % base;
+    const fracStr = frac.toString().padStart(decimals, "0").replace(/0+$/, "");
+    return fracStr ? `${whole}.${fracStr}` : whole.toString();
+  } catch (error) {
+    console.warn('Error formatting token:', error);
+    return "0";
+  }
+}
+
+// Show addresses as 0x...last4
+function shortAddr(addr) {
+  if (!addr) return "";
+  return `0x…${addr.slice(-4)}`;
+}
+
+function directionTag(row, addr) {
+  const a = addr.toLowerCase();
+  const from = (row.from || "").toLowerCase();
+  const to = (row.to || row.contractAddress || "").toLowerCase();
+  if (from === a && to === a) return '<span class="tag mut">Self</span>';
+  if (from === a) return '<span class="tag out">Outgoing</span>';
+  if (to === a) return '<span class="tag in">Incoming</span>';
+  return '<span class="tag mut">Other</span>';
+}
+
+// ---------- Etherscan fetch with better error handling ----------
+async function fetchTokenTxs({ address, contractaddress, page, offset }) {
+  const qp = new URLSearchParams({ 
+    module: "account", 
+    action: "tokentx", 
+    address, 
+    contractaddress, 
+    page, 
+    offset, 
+    sort: "desc", 
+    apikey: ETHERSCAN_API_KEY 
+  });
+  
+  try {
+    const res = await fetch(`${ETHERSCAN_BASE}?${qp.toString()}`);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
+    const data = await res.json();
+    if (data.status !== "1") {
+      // Handle specific Etherscan errors
+      if (data.message === "No transactions found") {
+        return [];
+      }
+      throw new Error(data.message || "Unknown Etherscan error");
+    }
+    return data.result || [];
+  } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Network error - please check your connection');
+    }
+    throw error;
+  }
+}
+
+// ---------- State ----------
+let state = { addr: "", pageSize: 25, pageTok: 1 };
+
+// ---------- UI ----------
+const walletInput = $("wallet");
+const statusEl = $("status");
+const pageSizeSel = $("pageSize");
+const pageTokEl = $("pageTok");
+const loadBtn = $("load");
+
+function showStatus(msg, isError = false) {
+  if (msg) {
+    statusEl.textContent = msg;
+    statusEl.style.display = 'block';
+    statusEl.className = isError ? 'status error' : 'status';
+  } else {
+    statusEl.style.display = 'none';
+  }
+}
+
+function setLoading(isLoading) {
+  if (isLoading) {
+    loadBtn.innerHTML = '<div class="spinner"></div><span>Loading...</span>';
+    loadBtn.disabled = true;
+  } else {
+    loadBtn.innerHTML = '<i class="fas fa-search"></i><span>Load Transactions</span>';
+    loadBtn.disabled = false;
+  }
+}
+
+// Event listeners
+$("load").addEventListener("click", () => {
+  state.addr = walletInput.value.trim();
+  state.pageTok = 1;
+  if (!/^0x[a-fA-F0-9]{40}$/.test(state.addr)) {
+    showStatus("⚠️ Please enter a valid wallet address", true);
+    return;
+  }
+  renderTok();
+});
+
+$("prevTok").addEventListener("click", () => {
+  if (state.pageTok > 1) {
+    state.pageTok--;
+    renderTok();
+  }
+});
+
+$("nextTok").addEventListener("click", () => {
+  state.pageTok++;
+  renderTok();
+});
+
+pageSizeSel.addEventListener("change", () => {
+  state.pageSize = Number(pageSizeSel.value);
+  state.pageTok = 1;
+  if (state.addr) renderTok();
+});
+
+// Enter key support
+walletInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    $("load").click();
+  }
+});
+
+async function renderTok() {
+  if (!state.addr) return;
+  
+  setLoading(true);
+  showStatus("🔍 Loading S2 token transactions...");
+  pageTokEl.textContent = `Page ${state.pageTok} · ${state.pageSize} items`;
+  
+  // Update pagination buttons
+  $("prevTok").disabled = state.pageTok <= 1;
+  $("prevTok").style.opacity = state.pageTok <= 1 ? '0.5' : '1';
+  
+  try {
+    const rows = await fetchTokenTxs({
+      address: state.addr,
+      contractaddress: TOKEN_CONTRACT,
+      page: state.pageTok,
+      offset: state.pageSize
+    });
+    
+    const tbody = $("tokTable").querySelector("tbody");
+    
+    if (rows.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-state">
+            <h3>No transactions found</h3>
+            <p>${state.pageTok === 1 ? 'This wallet has no S2 token transactions' : 'No more transactions on this page'}</p>
+          </td>
+        </tr>
+      `;
+      showStatus("📭 No transactions found for this address");
+    } else {
+      tbody.innerHTML = rows.map(r => {
+        const ts = new Date(Number(r.timeStamp) * 1000);
+        const amount = formatToken(r.value, r.tokenDecimal);
+        const dir = directionTag(r, state.addr);
+        return `<tr class="fade-in">
+          <td>${ts.toLocaleString()}</td>
+          <td><code class="address-code">${shortAddr(r.from)}</code></td>
+          <td><code class="address-code">${shortAddr(r.to)}</code></td>
+          <td class="amount-cell">${amount} S2</td>
+          <td>${dir}</td>
+        </tr>`;
+      }).join("");
+      showStatus(`✅ Loaded ${rows.length} transactions successfully`);
+    }
+    
+    // Disable next button if we got fewer results than requested
+    $("nextTok").disabled = rows.length < state.pageSize;
+    $("nextTok").style.opacity = rows.length < state.pageSize ? '0.5' : '1';
+    
+  } catch (e) {
+    console.error('Error loading transactions:', e);
+    const tbody = $("tokTable").querySelector("tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="empty-state">
+          <h3>Error loading transactions</h3>
+          <p>${e.message}</p>
+        </td>
+      </tr>
+    `;
+    showStatus(`❌ Error: ${e.message}`, true);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ---------- Auto sign-in and restore saved wallet with error handling ----------
+if (auth && db) {
+  onAuthStateChanged(auth, async (user) => {
+    try {
+      const u = user || (await signInAnonymously(auth)).user;
+      const snap = await getDoc(doc(db, "users", u.uid));
+      const saved = snap.exists() ? snap.data().walletAddress : "";
+      if (saved && !walletInput.value) {
+        walletInput.value = saved;
+        state.addr = saved;
+        renderTok();
+      }
+    } catch (error) {
+      console.warn('Firebase authentication/data retrieval failed:', error);
+      // Continue without Firebase functionality
+    }
+  });
+} else {
+  console.warn('Firebase not available - running in offline mode');
+}
+</script>
+</body>
+</html>

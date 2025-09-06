@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile | S2 App</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #144ee3;
+      --primary-dark: #0a1876;
+      --secondary: #48c6ef;
+      --gaming-accent: #ff6b35;
+      --gaming-success: #00e676;
+      --gaming-purple: #9c27b0;
+      --gaming-gold: #ffc107;
+      --gaming-danger: #ff1744;
+      --gaming-warning: #ff9800;
+      --background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 40px rgba(0,0,0,0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #8892b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-3px);
+    }
+
+    .profile-container {
+      max-width: 700px;
+      margin: 60px auto 40px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      backdrop-filter: blur(25px);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-container::before {
+      content: "";
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(72, 198, 239, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .profile-container::after {
+      content: "";
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(156, 39, 176, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--gaming-purple) 50%, var(--gaming-accent) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      margin-bottom: 35px;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gaming-accent), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 30px rgba(72, 198, 239, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-avatar::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+    }
+
+    .username-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    .username-display {
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .username-display:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--secondary);
+    }
+
+    .username-display::after {
+      content: "Click to edit";
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gaming-gold);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .username-display:hover::after {
+      opacity: 1;
+    }
+
+    .username-input {
+      background: var(--card-bg);
+      border: 1.5px solid var(--secondary);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: inherit;
+      outline: none;
+      box-shadow: 0 0 15px rgba(72, 198, 239, 0.3);
+      min-width: 150px;
+    }
+
+    .username-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .username-save, .username-cancel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .username-save:hover, .username-cancel:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.3);
+      transform: translateY(-1px);
+    }
+
+    .wallet-address-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    .wallet-address {
+      font-family: 'Courier New', monospace;
+      background: rgba(255,255,255,0.05);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .blur-text {
+      filter: blur(3px);
+      user-select: none;
+      transition: filter 0.3s ease;
+    }
+
+    .copy-btn {
+      background: linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+    }
+
+    .reset-password-btn {
+      background: linear-gradient(135deg, var(--gaming-warning) 0%, #f57c00 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+      width: 100%;
+      margin-top: 15px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .reset-password-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .reset-password-btn:hover::before {
+      left: 100%;
+    }
+
+    .reset-password-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+    }
+
+    .feedback-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 15px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 20px rgba(72, 198, 239, 0.3);
+    }
+
+    .feedback-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .feedback-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .anonymous-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      opacity: 0.7;
+      position: relative;
+    }
+
+    .anonymous-option::after {
+      content: "Coming Soon";
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gaming-gold);
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .anonymous-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--card-border);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      opacity: 0.5;
+    }
+
+    .anonymous-checkbox:checked {
+      background: var(--gaming-purple);
+      border-color: var(--gaming-purple);
+      opacity: 0.5;
+    }
+
+    .anonymous-checkbox:checked::after {
+      content: "✓";
+      position: absolute;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--gaming-purple) 0%, var(--primary) 100%);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(156, 39, 176, 0.4);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .contact-icon {
+      width: 20px;
+      text-align: center;
+      color: var(--gaming-accent);
+    }
+
+    .faq-item {
+      margin-bottom: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .faq-question {
+      padding: 18px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .faq-question:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .faq-question.active {
+      background: rgba(72, 198, 239, 0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+      color: var(--secondary);
+    }
+
+    .faq-question.active .faq-icon {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .faq-answer.open {
+      max-height: 300px;
+      padding: 20px;
+    }
+
+    .faq-answer p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(255, 23, 68, 0.3);
+      width: 100%;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logout-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .logout-btn:hover::before {
+      left: 100%;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 23, 68, 0.4);
+    }
+
+    /* Loading animations */
+    .loading {
+      background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 4px;
+      height: 20px;
+      min-width: 100px;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Success animation */
+    .success-flash {
+      animation: successFlash 0.5s ease;
+    }
+
+    @keyframes successFlash {
+      0% { background: var(--card-bg); }
+      50% { background: rgba(0, 230, 118, 0.2); }
+      100% { background: var(--card-bg); }
+    }
+
+    /* Shake animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .profile-container {
+        margin: 40px 10px 20px;
+        padding: 25px 20px;
+      }
+      
+      h2 {
+        font-size: 2.2rem;
+      }
+      
+      .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .wallet-address-container, .username-container {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .wallet-address {
+        max-width: 150px;
+      }
+      
+      .feedback-options {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .submit-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="dashboard.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+  </a>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <h2>👤 My Profile</h2>
+    </div>
+
+    <!-- Account Information Section -->
+    <div class="section">
+      <div class="section-title">
+        <i class="fas fa-user-cog"></i>
+        Account Information
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">
+          <i class="fas fa-user-tag"></i>
+          Username
+        </div>
+        <div class="username-container">
+          <div class="username-display" id="usernameDisplay">Loading...</div>
+          <div class="username-edit hidden" id="usernameEdit">
+            <input type="text" class="username-input" id="usernameInput" maxlength="20">
+            <div class="username-actions">
+              <button class="username-save" id="usernameSave">Save</button>
+              <button class="username-cancel" id="usernameCancel">Discard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">
+          <i class="fas fa-envelope"></i>
+          Email Address
+        </div>
+        <div class="info-value" id="userEmail">Loading...</div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-label">
+          <i class="fas fa-wallet"></i>
+          Wallet Address
+        </div>
+        <div class="wallet-address-container">
+          <div class="wallet-address blur-text" id="walletAddress">Loading...</div>
+          <button class="copy-btn" id="copyBtn">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+      </div>
+
+      <button class="reset-password-btn" id="resetPasswordBtn">
+        <i class="fas fa-key"></i>
+        Reset Password
+      </button>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="section">
+      <div class="section-title">
+        <i class="fas fa-question-circle"></i>
+        Frequently Asked Questions
+      </div>
+
+    
+
+      <div class="faq-item">
+        <div class="faq-question" data-faq="2">
+          <span>How do S2 tokens work?</span>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer" id="faq-2">
+          <p>S2 tokens are ERC-20 tokens that can be earned through platform activities, staked for rewards, or traded. They provide governance rights and access to premium features within the S2 ecosystem.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" data-faq="3">
+          <span>What are the transaction fees?</span>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer" id="faq-3">
+          <p>Transaction fees depend on network congestion and are paid in ETH. Internal S2 platform transactions have minimal fees, while blockchain transactions follow standard Ethereum gas prices.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" data-faq="4">
+          <span>Is my account secure?</span>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer" id="faq-4">
+          <p>Yes! We use industry-standard security practices including encrypted data storage, secure authentication, and regular security audits. Your private keys remain in your wallet and are never stored on our servers.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" data-faq="5">
+          <span>How do I earn S2 tokens?</span>
+          <i class="fas fa-chevron-down faq-icon"></i>
+        </div>
+        <div class="faq-answer" id="faq-5">
+          <p>You can earn S2 tokens through various activities: daily login rewards, completing tasks, participating in community events, staking, and referral programs. Check the Dashboard for current earning opportunities.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Section -->
+    <div class="section">
+      <div class="section-title">
+        <i class="fas fa-comments"></i>
+        Suggestions & Feedback
+      </div>
+      
+      <textarea 
+        class="feedback-textarea" 
+        id="feedbackBox" 
+        placeholder="Share your thoughts, suggestions, or report any issues you've encountered. Your feedback helps us improve the S2 experience!"
+      ></textarea>
+      
+      <div class="feedback-options">
+        <label class="anonymous-option">
+          <input type="checkbox" class="anonymous-checkbox" id="anonymousCheck">
+          <i class="fas fa-user-secret"></i>
+          Send anonymously (hide my username)
+        </label>
+        
+        <button class="submit-btn" id="submitFeedbackBtn">
+          <i class="fas fa-paper-plane"></i> Submit Feedback
+        </button>
+      </div>
+    </div>
+
+    <!-- Support Section -->
+    <div class="section">
+      <div class="section-title">
+        <i class="fas fa-headset"></i>
+        Support & Contact
+      </div>
+      
+      <div class="contact-item">
+        <i class="fas fa-phone contact-icon"></i>
+        <div>
+          <strong>Phone Support:</strong> +91 8125902062<br>
+          <small style="color: var(--text-muted);">Available Mon-Fri, 9 AM - 6 PM IST</small>
+        </div>
+      </div>
+      
+      <div class="contact-item">
+        <i class="fas fa-envelope contact-icon"></i>
+        <div>
+          <strong>Email Support:</strong> srishanthreddyy05@gmail.com<br>
+          <small style="color: var(--text-muted);">Response within 24 hours</small>
+        </div>
+      </div>
+
+      
+
+    <button class="logout-btn" id="logoutBtn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const usernameEdit = document.getElementById('usernameEdit');
+    const usernameInput = document.getElementById('usernameInput');
+    const usernameSave = document.getElementById('usernameSave');
+    const usernameCancel = document.getElementById('usernameCancel');
+    const userEmail = document.getElementById('userEmail');
+    const walletAddressElem = document.getElementById('walletAddress');
+    const copyBtn = document.getElementById('copyBtn');
+    const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const feedbackBox = document.getElementById('feedbackBox');
+    const submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
+    const anonymousCheck = document.getElementById('anonymousCheck');
+
+    let currentUser = null;
+    let currentUsername = '';
+
+    // Auth check and load user data
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        
+        // Display user email
+        userEmail.innerText = user.email || "No email provided";
+        
+        try {
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            currentUsername = data.username || "Unknown User";
+            usernameDisplay.innerText = currentUsername;
+            walletAddressElem.innerText = data.walletAddress || "Not Connected";
+          } else {
+            currentUsername = "Unknown User";
+            usernameDisplay.innerText = currentUsername;
+            walletAddressElem.innerText = "No data found";
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          currentUsername = "Error loading data";
+          usernameDisplay.innerText = currentUsername;
+          walletAddressElem.innerText = "Error loading data";
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    // FAQ functionality
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const faqId = question.getAttribute('data-faq');
+        const answer = document.getElementById(`faq-${faqId}`);
+        const icon = question.querySelector('.faq-icon');
+        
+        // Close all other FAQs
+        document.querySelectorAll('.faq-question').forEach(otherQuestion => {
+          if (otherQuestion !== question) {
+            const otherId = otherQuestion.getAttribute('data-faq');
+            const otherAnswer = document.getElementById(`faq-${otherId}`);
+            const otherIcon = otherQuestion.querySelector('.faq-icon');
+            
+            otherQuestion.classList.remove('active');
+            otherAnswer.classList.remove('open');
+            otherIcon.style.transform = 'rotate(0deg)';
+          }
+        });
+        
+        // Toggle current FAQ
+        const isOpen = question.classList.contains('active');
+        
+        if (isOpen) {
+          question.classList.remove('active');
+          answer.classList.remove('open');
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          question.classList.add('active');
+          answer.classList.add('open');
+          icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+
+    // Username editing functionality
+    usernameDisplay.addEventListener('click', () => {
+      usernameInput.value = currentUsername;
+      usernameDisplay.classList.add('hidden');
+      usernameEdit.classList.remove('hidden');
+      usernameInput.focus();
+    });
+
+    usernameCancel.addEventListener('click', () => {
+      usernameEdit.classList.add('hidden');
+      usernameDisplay.classList.remove('hidden');
+    });
+
+    usernameSave.addEventListener('click', async () => {
+      const newUsername = usernameInput.value.trim();
+
+      // Validation
+      if (!newUsername) {
+        usernameInput.classList.add('shake');
+        setTimeout(() => usernameInput.classList.remove('shake'), 500);
+        return;
+      }
+
+      if (newUsername.length < 3) {
+        usernameInput.classList.add('shake');
+        setTimeout(() => usernameInput.classList.remove('shake'), 500);
+        alert('Username must be at least 3 characters long');
+        return;
+      }
+
+      if (newUsername === currentUsername) {
+        usernameEdit.classList.add('hidden');
+        usernameDisplay.classList.remove('hidden');
+        return;
+      }
+
+      // Save loading state
+      usernameSave.disabled = true;
+      usernameSave.innerHTML = 'Saving...';
+
+      try {
+        // Update in Firestore
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+          username: newUsername
+        });
+
+        // Update local state and UI
+        currentUsername = newUsername;
+        usernameDisplay.innerText = newUsername;
+        
+        // Success animation
+        usernameDisplay.classList.add('success-flash');
+        setTimeout(() => usernameDisplay.classList.remove('success-flash'), 500);
+
+        // Hide edit form
+        usernameEdit.classList.add('hidden');
+        usernameDisplay.classList.remove('hidden');
+
+        console.log(`Username updated to: ${newUsername}`);
+
+      } catch (error) {
+        console.error("Error updating username:", error);
+        alert('Failed to update username. Please try again.');
+        usernameInput.classList.add('shake');
+        setTimeout(() => usernameInput.classList.remove('shake'), 500);
+      } finally {
+        usernameSave.disabled = false;
+        usernameSave.innerHTML = 'Save';
+      }
+    });
+
+    // Enter key to save username
+    usernameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        usernameSave.click();
+      } else if (e.key === 'Escape') {
+        usernameCancel.click();
+      }
+    });
+
+    // Copy wallet address with animation
+    copyBtn.addEventListener('click', async () => {
+      const walletText = walletAddressElem.innerText;
+
+      try {
+        await navigator.clipboard.writeText(walletText);
+        
+        // Visual feedback
+        walletAddressElem.classList.remove('blur-text');
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        copyBtn.style.background = 'linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%)';
+        
+        // Flash animation
+        walletAddressElem.classList.add('success-flash');
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+          copyBtn.style.background = 'linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%)';
+          walletAddressElem.classList.remove('success-flash');
+        }, 2000);
+
+      } catch (err) {
+        console.error("Copy failed", err);
+        copyBtn.innerHTML = '<i class="fas fa-times"></i> Failed';
+        copyBtn.style.background = 'linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%)';
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+          copyBtn.style.background = 'linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%)';
+        }, 2000);
+      }
+    });
+
+    // Password reset functionality
+    resetPasswordBtn.addEventListener('click', async () => {
+      if (!currentUser || !currentUser.email) {
+        alert('No email address found for password reset.');
+        return;
+      }
+
+      const confirmReset = confirm(`Send password reset email to: ${currentUser.email}?`);
+      
+      if (!confirmReset) return;
+
+      // Button loading state
+      resetPasswordBtn.disabled = true;
+      resetPasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+      try {
+        await sendPasswordResetEmail(auth, currentUser.email);
+        
+        // Success feedback
+        resetPasswordBtn.innerHTML = '<i class="fas fa-check"></i> Email Sent!';
+        resetPasswordBtn.style.background = 'linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%)';
+        
+        // Success animation
+        resetPasswordBtn.classList.add('success-flash');
+        
+        alert(`Password reset email sent to: ${currentUser.email}\nCheck your inbox and spam folder.`);
+        
+        setTimeout(() => {
+          resetPasswordBtn.disabled = false;
+          resetPasswordBtn.innerHTML = '<i class="fas fa-key"></i> Reset Password';
+          resetPasswordBtn.style.background = 'linear-gradient(135deg, var(--gaming-warning) 0%, #f57c00 100%)';
+          resetPasswordBtn.classList.remove('success-flash');
+        }, 3000);
+
+      } catch (error) {
+        console.error("Password reset error:", error);
+        
+        let errorMessage = 'Failed to send password reset email. ';
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage += 'User not found.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage += 'Invalid email address.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage += 'Too many requests. Please try again later.';
+            break;
+          default:
+            errorMessage += 'Please try again.';
+        }
+        
+        alert(errorMessage);
+        
+        resetPasswordBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+        resetPasswordBtn.style.background = 'linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%)';
+        
+        setTimeout(() => {
+          resetPasswordBtn.disabled = false;
+          resetPasswordBtn.innerHTML = '<i class="fas fa-key"></i> Reset Password';
+          resetPasswordBtn.style.background = 'linear-gradient(135deg, var(--gaming-warning) 0%, #f57c00 100%)';
+        }, 2000);
+      }
+    });
+
+    // Submit feedback - ALWAYS saves username regardless of checkbox
+    submitFeedbackBtn.addEventListener('click', async () => {
+      const feedback = feedbackBox.value.trim();
+      const isAnonymousChecked = anonymousCheck.checked; // Read checkbox state but ignore it
+
+      if (!feedback) {
+        // Shake animation for empty feedback
+        feedbackBox.style.animation = 'shake 0.5s';
+        feedbackBox.focus();
+        setTimeout(() => feedbackBox.style.animation = '', 500);
+        return;
+      }
+
+      if (!currentUser) {
+        alert("You must be logged in to submit feedback.");
+        return;
+      }
+
+      // Button loading state
+      submitFeedbackBtn.disabled = true;
+      submitFeedbackBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+      try {
+        // Get the user's name from Firestore
+        const userRef = doc(db, "users", currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        const username = userSnap.exists() ? userSnap.data().username || "Unknown" : "Unknown";
+
+        // ALWAYS save with real username (dummy checkbox doesn't affect this)
+        const feedbackRef = doc(db, "feedback", currentUser.uid + "_" + Date.now());
+        await setDoc(feedbackRef, {
+          username: username, // Always real username, never "Anonymous User"
+          feedback,
+          isAnonymousChecked: isAnonymousChecked, // Save checkbox state for reference
+          timestamp: new Date(),
+          userId: currentUser.uid,
+          userEmail: currentUser.email
+        });
+
+        console.log(`Feedback saved with username: ${username} (checkbox was ${isAnonymousChecked ? 'checked' : 'unchecked'})`);
+
+        // Success feedback
+        submitFeedbackBtn.innerHTML = '<i class="fas fa-check"></i> Submitted!';
+        submitFeedbackBtn.style.background = 'linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%)';
+        
+        feedbackBox.value = "";
+        anonymousCheck.checked = false;
+        
+        // Flash success animation
+        document.querySelector('.section').classList.add('success-flash');
+        
+        setTimeout(() => {
+          submitFeedbackBtn.disabled = false;
+          submitFeedbackBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback';
+          submitFeedbackBtn.style.background = 'linear-gradient(135deg, var(--gaming-purple) 0%, var(--primary) 100%)';
+          document.querySelector('.section').classList.remove('success-flash');
+        }, 2000);
+
+      } catch (err) {
+        console.error("Error submitting feedback:", err);
+        
+        submitFeedbackBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+        submitFeedbackBtn.style.background = 'linear-gradient(135deg, var(--gaming-danger) 0%, #d50000 100%)';
+        
+        setTimeout(() => {
+          submitFeedbackBtn.disabled = false;
+          submitFeedbackBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Feedback';
+          submitFeedbackBtn.style.background = 'linear-gradient(135deg, var(--gaming-purple) 0%, var(--primary) 100%)';
+        }, 2000);
+      }
+    });
+
+    // Logout with confirmation
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        logoutBtn.disabled = true;
+        logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+        
+        signOut(auth).then(() => {
+          window.location.href = "login.html";
+        }).catch((error) => {
+          console.error("Logout failed:", error);
+          logoutBtn.disabled = false;
+          logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

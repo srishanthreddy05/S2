@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>S2 Hub | Welcome</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0D0F18;
+      --bg-gradient-start: #1A1C2D;
+      --bg-gradient-end: #0D0F18;
+      --primary-accent: #8A2BE2;
+      --secondary-accent: #48C6EF;
+      --success: #00C851;
+      --warning: #ff6b35;
+      --arbitrage: #FFD700;
+      --glass: rgba(26, 28, 45, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.35);
+      --text-primary: #F0F2F5;
+      --text-secondary: #A0AEC0;
+      --font-primary: 'Poppins', sans-serif;
+      --font-secondary: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      background-image: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+      font-family: var(--font-secondary);
+      color: var(--text-primary);
+      padding: 40px 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Aurora Background Effect */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60vw;
+      height: 60vh;
+      max-width: 700px;
+      max-height: 700px;
+      background-image: radial-gradient(circle, var(--primary-accent), transparent 60%);
+      opacity: 0.15;
+      filter: blur(120px);
+      animation: aurora-pulse 15s infinite alternate ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes aurora-pulse {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.1; }
+      100% { transform: translate(-45%, -55%) scale(1.2); opacity: 0.2; }
+    }
+
+    .dashboard-container {
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Header (Title + Profile Icon) */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+    
+    .header h2 {
+        font-family: var(--font-primary);
+        font-size: 2.2rem;
+        font-weight: 600;
+        letter-spacing: -1px;
+    }
+    
+    .profile-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid var(--glass-border);
+        transition: all 0.3s ease;
+        position: static; /* Override absolute positioning */
+        box-shadow: none;
+    }
+
+    .profile-icon:hover {
+        transform: scale(1.1);
+        border-color: var(--secondary-accent);
+        box-shadow: 0 0 20px rgba(72, 198, 239, 0.4);
+    }
+    
+    .profile-icon img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Base Card Style */
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(15px);
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+    }
+
+    /* Wallet Section */
+    .wallet-section {
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 35px 40px;
+    }
+
+    .wallet-info .greeting { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 8px; }
+    .wallet-info #username { font-weight: 600; color: var(--text-primary); font-size: 1.3rem; }
+    .wallet-balance .balance-label { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 8px; text-align: right; }
+    .wallet-balance #walletBalance {
+      font-family: var(--font-primary);
+      font-size: 2.6rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -1px;
+    }
+
+    /* Actions Grid */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .actions-grid .card h3 {
+      font-family: var(--font-primary);
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .actions-grid .card h3 i { margin-right: 12px; color: var(--secondary-accent); }
+    .actions-grid .card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; min-height: 60px; }
+
+    /* Special icon color for arbitrage */
+    .arbitrage-card h3 i { color: var(--arbitrage) !important; }
+
+    /* Buttons */
+    .btn {
+      padding: 14px 28px;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-size: 200% auto;
+      font-family: var(--font-primary);
+      width: 100%;
+    }
+    
+    .btn-primary { background-image: linear-gradient(to right, var(--primary-accent) 0%, var(--secondary-accent) 51%, var(--primary-accent) 100%); }
+    .btn-success { background-image: linear-gradient(to right, var(--success) 0%, #00e676 51%, var(--success) 100%); }
+    .btn-secondary { background: #33374C; }
+    .btn-disabled { background: #2A2D3A; color: #6B7280; cursor: not-allowed; opacity: 0.7; }
+    .btn-arbitrage { background-image: linear-gradient(to right, var(--arbitrage) 0%, #FFE135 51%, var(--arbitrage) 100%); color: #1a1a1a; }
+    .btn:hover:not(:disabled):not(.btn-disabled) { background-position: right center; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,0,0,0.4); }
+    .btn:disabled { background-image: none; background-color: #33374C; opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none;}
+    
+    #claimBtn { background-image: linear-gradient(to right, var(--warning) 0%, #ff8e53 51%, var(--warning) 100%); }
+    #claimBtn:not(:disabled) { animation: glow-pulse 2s infinite; }
+    
+    @keyframes glow-pulse {
+        0% { box-shadow: 0 0 5px rgba(255, 107, 53, 0.4); }
+        50% { box-shadow: 0 0 25px rgba(255, 107, 53, 0.8); }
+        100% { box-shadow: 0 0 5px rgba(255, 107, 53, 0.4); }
+    }
+    
+    #mineTimer {
+      font-weight: 500;
+      margin: 20px 0 15px;
+      padding: 12px 16px;
+      background: rgba(138, 43, 226, 0.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      border-left: 3px solid var(--primary-accent);
+      text-align: center;
+    }
+    
+    /* Loading Shimmer Effect */
+    .loading-shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: loading-shimmer-anim 1.5s infinite linear;
+      border-radius: 6px;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      user-select: none;
+    }
+    #username.loading-shimmer { height: 24px; width: 120px; display: inline-block; }
+    #walletBalance.loading-shimmer { height: 40px; width: 220px; display: inline-block; background-size: 200% 100%; }
+    @keyframes loading-shimmer-anim { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Coming Soon Badge */
+    .coming-soon-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(45deg, #ff6b35, #ffa726);
+  color: white;
+  padding: 3px 8px;   /* smaller box */
+  border-radius: 12px; /* less round */
+  font-size: 0.6rem;   /* smaller font */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  animation: pulse-badge 2s infinite;
+  box-shadow: 0 1px 4px rgba(255, 107, 53, 0.25); /* lighter shadow */
+}
+
+    @keyframes pulse-badge {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 20px 15px; }
+      .header h2 { font-size: 1.8rem; }
+      .wallet-section { flex-direction: column; text-align: center; gap: 10px; padding: 25px; }
+      .wallet-balance .balance-label { text-align: center; }
+      .wallet-balance #walletBalance { font-size: 2.2rem; }
+      .actions-grid { grid-template-columns: 1fr; }
+      .coming-soon-badge { top: 15px; right: 15px; }
+    }
+    /* Community Card Styling */
+.community-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.community-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(72, 198, 239, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.community-card:hover::before {
+  left: 100%;
+}
+
+/* Community Buttons Container */
+.community-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+/* Chat Room Button */
+.btn-chat {
+  background: linear-gradient(135deg, #8A2BE2, #48C6EF);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-chat:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+}
+
+.btn-chat:active {
+  transform: translateY(0);
+}
+
+/* Updates Button */
+.btn-updates {
+  background: linear-gradient(135deg, #FF6B35, #F7931E);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-updates:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+}
+
+.btn-updates:active {
+  transform: translateY(0);
+}
+
+/* Button Icons */
+.btn-chat i,
+.btn-updates i {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.btn-chat:hover i,
+.btn-updates:hover i {
+  transform: scale(1.1);
+}
+
+/* Ripple Effect */
+.btn-chat::after,
+.btn-updates::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+.btn-chat:active::after,
+.btn-updates:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .community-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .btn-chat,
+  .btn-updates {
+    padding: 16px 24px;
+    font-size: 16px;
+    min-width: auto;
+  }
+}
+
+/* Loading State (Optional) */
+.btn-chat.loading,
+.btn-updates.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-chat.loading i,
+.btn-updates.loading i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+  </style>
+</head>
+
+<body>
+  <div class="dashboard-container">
+    
+    <header class="header">
+      <h2>S2 Hub</h2>
+      <a href="profile.html" class="profile-icon" title="Profile">
+        <img src="https://static.vecteezy.com/system/resources/previews/005/544/718/original/profile-icon-design-free-vector.jpg" alt="Profile" />
+      </a>
+    </header>
+
+    <!-- Original .wallet-section is now a styled card -->
+    <div class="card wallet-section">
+    <div class="wallet-info">
+        <p class="greeting">Hi, <span id="username" class="loading-shimmer">User...</span></p>
+    </div>
+    <div class="wallet-stats">
+        <div class="wallet-balance">
+            <p class="balance-label">Balance</p>
+            <p id="walletBalance" class="loading-shimmer">0.00 S2</p>
+        </div>
+        <a href="games.html" class="leaderboard-btn">
+            <i class="fas fa-trophy"></i>
+            View Leaderboard
+        </a>
+    </div>
+</div>
+    
+    <div class="actions-grid" style="margin-top: 40px;">
+
+      <!-- Transactions Card (Send/Receive) -->
+  
+      <!-- Daily Check-In Card -->
+      <div class="card">
+        <h3><i class="fas fa-calendar-check"></i>Daily Check-In</h3>
+        <p>Check in every day to earn bonus coins and keep your streak alive!</p>
+        <button id="checkInBtn" class="btn btn-success">
+          <i class="fas fa-calendar-check"></i> Check In Today
+        </button>
+      </div>
+
+      <!-- Mining Card -->
+      <div class="card">
+        <h3><i class="fas fa-rocket"></i>Mining Cycle</h3>
+        <p>Start the 24-hour cycle to mine 5 S2 tokens. Claim them when the cycle is complete.</p>
+        <button id="startMiningBtn" class="btn btn-primary">
+          <i class="fas fa-play"></i> Start Mining
+        </button>
+        <div id="mineTimer" style="display:none;">Loading mining status...</div>
+        <button id="claimBtn" class="btn" disabled style="display:none;">
+          <i class="fas fa-coins"></i> Claim Coins
+        </button>
+      </div>
+       <div class="card">
+    <h3><i class="fas fa-exchange-alt"></i>Transactions</h3>
+    <p>Securely send S2 tokens. All transactions are recorded on-chain.</p>
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        <button class="btn btn-primary" onclick="window.location.href='send.html'">
+            <i class="fas fa-paper-plane"></i> Send
+        </button>
+        <button class="btn btn-secondary" onclick="window.location.href='guess.html'">
+            <i class="fas fa-search"></i> Track
+        </button>
+    </div>
+</div>
+
+<!-- Community Card -->
+<div class="card community-card">
+ <h3><i class="fas fa-users"></i> Community Hub</h3>
+ <p>Connect with the S2 community! Join chats and  stay updated with the latest announcements.</p>
+ 
+ <div class="community-buttons">
+   <button class="btn btn-chat" onclick="window.location.href='chat.html'">
+     <i class="fas fa-comments"></i> Chat Room
+   </button>
+   <button class="btn btn-updates" onclick="window.location.href='announcements.html'">
+     <i class="fas fa-bullhorn"></i> Announcements
+   </button>
+ </div>
+</div>
+
+
+      <!-- Arbitrage Card -->
+      <!-- Arbitrage Trading Card (Simulated) -->
+<div class="card arbitrage-card">
+ <div class="coming-soon-badge">Simulated</div>
+ <h3><i class="fas fa-chart-line-up"></i> Arbitrage Trading</h3>
+ <p>Discover price differences across exchanges and profit from market inefficiencies with automated arbitrage opportunities.</p>
+ <button class="btn btn-arbitrage" onclick="window.location.href='arbitrage.html'">
+   <i class="fas fa-coins"></i> Start Arbitrage
+ </button>
+</div>
+
+
+
+
+      <!-- NFT Marketplace Card (Coming Soon) -->
+      <div class="card">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <h3><i class="fas fa-images"></i>NFT Marketplace</h3>
+        <p>Buy, sell, and trade exclusive NFTs using your S2 tokens in our upcoming marketplace.</p>
+        <button class="btn btn-disabled" disabled>
+          <i class="fas fa-shopping-cart"></i> Browse NFTs
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import { doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.min.js";
+
+    const usernameElem = document.getElementById('username');
+    const walletBalanceElem = document.getElementById('walletBalance');
+    const mineTimerElem = document.getElementById('mineTimer');
+    const startMiningBtn = document.getElementById('startMiningBtn');
+    const claimBtn = document.getElementById('claimBtn');
+    const checkInBtn = document.getElementById('checkInBtn');
+    
+    let walletAddress = "";
+    let userUID = null;
+    let miningInterval;
+
+    const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/ClpCcgdo1MhTbt2zqT84E");
+    const tokenAddress = "0x56eaaf87a9f4b2cc413df472b23950b2a8db2fcc";
+    const tokenABI = [
+      "function balanceOf(address) view returns (uint256)",
+      "function decimals() view returns (uint8)",
+      "function symbol() view returns (string)"
+    ];
+
+    async function updateBalance() {
+        if (!walletAddress) return;
+        try {
+            const contract = new ethers.Contract(tokenAddress, tokenABI, provider);
+            const rawBalance = await contract.balanceOf(walletAddress);
+            const decimals = await contract.decimals();
+            const symbol = await contract.symbol();
+            const formatted = parseFloat(ethers.formatUnits(rawBalance, decimals)).toFixed(4);
+            walletBalanceElem.innerText = `${formatted} ${symbol}`;
+            walletBalanceElem.classList.remove('loading-shimmer');
+        } catch (e) {
+            console.error("Could not fetch balance:", e);
+            walletBalanceElem.innerText = "N/A";
+        }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        userUID = user.uid;
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            walletAddress = data.walletAddress;
+            usernameElem.innerText = data.username || "User";
+            usernameElem.classList.remove('loading-shimmer');
+            
+            updateBalance();
+            setupMining(data.lastMineTime, data.canClaim);
+          }
+        } catch (err) {
+          console.error("Error loading wallet:", err);
+          walletBalanceElem.innerText = "Error";
+          usernameElem.innerText = "Error";
+          usernameElem.classList.remove('loading-shimmer');
+          walletBalanceElem.classList.remove('loading-shimmer');
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    checkInBtn.addEventListener('click', async () => {
+      if (!walletAddress) return alert("Wallet not loaded yet.");
+      const btn = checkInBtn;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking in...';
+      
+      try {
+        const response = await fetch("http://localhost:3010/daily-checkin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: walletAddress })
+        });
+        const result = await response.json();
+        alert(result.success ? "✅ Check-in successful! 2 S2 Tokens sent." : result.error);
+        if (result.success) updateBalance();
+      } catch (err) {
+        alert("⚠️ Error connecting to server.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-calendar-check"></i> Check In Today';
+      }
+    });
+
+    startMiningBtn.addEventListener('click', async () => {
+      if (!walletAddress) return alert("Wallet not loaded yet.");
+      const btn = startMiningBtn;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting...';
+      
+      try {
+        const res = await fetch("http://localhost:3010/mine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: walletAddress })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert("✅ Mining started. Come back after 24 hrs.");
+          const userRef = doc(db, "users", userUID);
+          await updateDoc(userRef, { lastMineTime: serverTimestamp(), canClaim: false });
+          // Pass the current timestamp for immediate UI update
+          setupMining({ seconds: Math.floor(Date.now() / 1000) }, false);
+        } else {
+          alert(result.error);
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-play"></i> Start Mining';
+        }
+      } catch (err) {
+        alert("⚠️ Failed to start mining.");
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-play"></i> Start Mining';
+      }
+    });
+
+    claimBtn.addEventListener('click', async () => {
+      const btn = claimBtn;
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Claiming...';
+      
+      try {
+        const res = await fetch("http://localhost:3010/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: walletAddress })
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+          alert("🎉 Claimed 5 S2 successfully!");
+          
+          // CRITICAL FIX: Update the database to reset mining state
+          const userRef = doc(db, "users", userUID);
+          await updateDoc(userRef, { 
+            canClaim: false,
+            lastMineTime: null  // Set to null instead of deleteField
+          });
+          
+          // Force refresh the mining state from database
+          const docSnap = await getDoc(userRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setupMining(data.lastMineTime, data.canClaim);
+          }
+          
+          updateBalance();
+        } else {
+          alert(result.error || "⚠️ Failed to claim tokens.");
+          btn.disabled = false;
+          btn.innerHTML = originalHTML;
+        }
+      } catch (err) {
+        console.error("Claim error:", err);
+        alert("⚠️ Failed to claim tokens.");
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+      }
+    });
+
+    function setupMining(lastMineTimestamp, canClaim) {
+        // Clear any existing timer
+        clearInterval(miningInterval);
+        
+        // Debug logging
+        console.log("Setting up mining with:", { lastMineTimestamp, canClaim });
+        
+        // Case 1: Ready to claim (mining cycle complete)
+        if (canClaim === true) {
+            console.log("Case 1: Ready to claim");
+            mineTimerElem.style.display = 'block';
+            mineTimerElem.innerText = "Cycle complete. Ready to Claim!";
+            startMiningBtn.style.display = 'none';
+            claimBtn.style.display = 'block';
+            claimBtn.disabled = false;
+            claimBtn.innerHTML = '<i class="fas fa-coins"></i> Claim Coins';
+            return;
+        }
+
+        // Case 2: No mining in progress (initial state or after claiming)  
+        if (!lastMineTimestamp || lastMineTimestamp === null || lastMineTimestamp === undefined) {
+            console.log("Case 2: No mining in progress");
+            mineTimerElem.style.display = 'none';
+            claimBtn.style.display = 'none';
+            startMiningBtn.style.display = 'block';
+            startMiningBtn.disabled = false;
+            startMiningBtn.innerHTML = '<i class="fas fa-play"></i> Start Mining';
+            return;
+        }
+        
+        // Case 3: Mining in progress - show timer
+        console.log("Case 3: Mining in progress");
+        startMiningBtn.style.display = 'none';
+        claimBtn.style.display = 'block';
+        claimBtn.disabled = true;
+        claimBtn.innerHTML = '<i class="fas fa-coins"></i> Claim Coins';
+        mineTimerElem.style.display = 'block';
+        
+        const targetTime = (lastMineTimestamp.seconds + 24 * 60 * 60) * 1000;
+
+        function updateTimer() {
+            const diff = targetTime - Date.now();
+            if (diff <= 0) {
+                // Mining cycle completed
+                mineTimerElem.innerText = "Cycle complete. Ready to Claim!";
+                claimBtn.disabled = false;
+                // Update database to reflect completion
+                if (userUID) {
+                    const userRef = doc(db, "users", userUID);
+                    updateDoc(userRef, { canClaim: true });
+                }
+                clearInterval(miningInterval);
+            } else {
+                const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+                mineTimerElem.innerText = `Time left: ${h}:${m}:${s}`;
+            }
+        }
+        updateTimer();
+        miningInterval = setInterval(updateTimer, 1000);
+    }
+  </script>
+</body>
+</html>

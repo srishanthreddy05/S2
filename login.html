@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | S2 App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Styling */
+    :root {
+      --primary-color: #5C67DE; /* A sophisticated blue/purple */
+      --primary-dark: #4A55C0;
+      --google-color: #4285F4;
+      --google-hover: #357ae8;
+      --background-light: #F4F7F6; /* Softer light background */
+      --text-color: #333;
+      --border-color: #E0E0E0;
+      --shadow-light: rgba(0, 0, 0, 0.08);
+      --shadow-medium: rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif; /* A more modern, clean font */
+    }
+
+    body {
+      background: var(--background-light);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Hide overflow from falling coins */
+      position: relative; /* For coin positioning */
+    }
+
+    /* Coin Fall Animation Styling */
+    .coin-fall-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* Allows clicks to pass through */
+      z-index: 0; /* Ensures coins are behind the form */
+    }
+
+    .coin {
+      position: absolute;
+      background: linear-gradient(145deg, #FFD700, #DAA520, #FFD700); /* Golden gradient */
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      opacity: 0; /* Start invisible */
+      animation: fall ease-in infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px) rotateZ(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1; /* Fade in quickly */
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(calc(100vh + 100px)) rotateZ(720deg); /* Fall past the screen */
+        opacity: 0; /* Fade out */
+      }
+    }
+
+    /* Login Container Styling */
+    .container {
+      background: white;
+      padding: 45px 35px; /* Slightly more padding */
+      border-radius: 15px; /* Softer rounded corners */
+      box-shadow: 0 8px 30px var(--shadow-light); /* More diffused shadow */
+      width: 100%;
+      max-width: 420px; /* Slightly wider */
+      text-align: center;
+      transition: transform 0.3s ease-in-out; /* Subtle animation on load/hover potential */
+      position: relative; /* To ensure it's above coins */
+      z-index: 1; /* Ensures form is above coins */
+    }
+
+    .container:hover {
+        transform: translateY(-3px); /* Gentle lift on hover */
+    }
+
+    h2 {
+      margin-bottom: 30px; /* More space */
+      color: var(--text-color);
+      font-weight: 600; /* Bolder for prominence */
+      font-size: 2em; /* Larger title */
+    }
+
+    /* Google Login Button */
+    .google-login-btn {
+      width: 100%;
+      background: var(--google-color);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .google-login-btn:hover {
+      background: var(--google-hover);
+      transform: translateY(-2px);
+    }
+
+    .google-login-btn:active {
+      transform: translateY(0);
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 25px 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .divider span {
+      margin: 0 15px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      padding: 14px 15px; /* More padding */
+      margin: 12px 0; /* More vertical space */
+      border-radius: 8px; /* Softer rounded corners */
+      border: 1px solid var(--border-color);
+      font-size: 16px;
+      color: var(--text-color);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input::placeholder {
+        color: #999; /* Lighter placeholder text */
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(92, 103, 222, 0.2); /* Softer focus halo */
+    }
+
+    .show-password {
+      display: flex;
+      align-items: center;
+      margin: 5px 0 10px; /* Adjusted margin */
+      font-size: 15px;
+      color: #555;
+    }
+
+    .show-password input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px; /* Make checkbox slightly larger */
+      height: 18px;
+      accent-color: var(--primary-color); /* Style the checkbox itself */
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .forgot-password a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 14px;
+      transition: text-decoration 0.2s ease;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 15px; /* More padding for a bolder button */
+      border-radius: 8px;
+      font-size: 18px; /* Slightly larger font */
+      font-weight: 500; /* Medium weight */
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 15px;
+      letter-spacing: 0.5px; /* Slight letter spacing */
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px); /* Slight lift on hover */
+    }
+
+    button:active {
+        transform: translateY(0); /* Press effect */
+    }
+
+    .error {
+      color: #E74C3C; /* A more distinct error color */
+      font-size: 14px;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    .signup-link {
+      margin-top: 20px;
+      font-size: 15px;
+      color: #555;
+    }
+
+    .signup-link a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: text-decoration 0.2s ease;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Loading state */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .loading::after {
+      content: '...';
+      animation: loading-dots 1.5s infinite;
+    }
+
+    @keyframes loading-dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    /* Resend email section */
+    .resend-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .resend-section p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .secondary-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin: 0;
+    }
+
+    .secondary-btn:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="coin-fall-container"></div> 
+  
+  <div class="container">
+    <h2>Welcome Back!</h2>
+    
+    <!-- Google Login Button -->
+    <button type="button" class="google-login-btn" id="googleLoginBtn">
+      <img class="google-icon" src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" height="20">
+      Continue with Google
+    </button>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>or</span>
+    </div>
+    
+    <!-- Email Login Form -->
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email Address" required />
+      <input type="password" id="password" placeholder="Password" required />
+
+      <div class="show-password">
+        <input type="checkbox" id="togglePassword" />
+        <label for="togglePassword">Show Password</label>
+      </div>
+
+      <div class="forgot-password">
+        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      </div>
+
+      <button type="submit">Log In</button>
+      <div class="error" id="errorMessage"></div>
+    </form>
+
+    <div class="signup-link">
+      Don't have an account? <a href="signup.html">Sign up here</a>
+    </div>
+
+    <!-- Resend Email Section -->
+    <div class="resend-section">
+      <p>Didn't receive verification email?</p>
+      <button type="button" class="secondary-btn" id="resendEmailBtn">
+        Resend Verification Email
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="login.js"></script>
+
+  <script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('change', () => {
+      passwordInput.type = togglePassword.checked ? 'text' : 'password';
+    });
+
+    // Optional: Clear error message on input focus for better UX
+    const emailInput = document.getElementById('email');
+    const errorMessage = document.getElementById('errorMessage');
+
+    emailInput.addEventListener('focus', () => {
+        errorMessage.textContent = '';
+    });
+    passwordInput.addEventListener('focus', () => {
+        errorMessage.textContent = '';
+    });
+
+    // Coin Generation Script
+    const coinFallContainer = document.querySelector('.coin-fall-container');
+    const numberOfCoins = 30; // Adjust for more/fewer coins
+
+    for (let i = 0; i < numberOfCoins; i++) {
+      const coin = document.createElement('div');
+      coin.classList.add('coin');
+      coin.style.left = `${Math.random() * 100}vw`; // Random horizontal position
+      coin.style.width = `${Math.random() * (25 - 15) + 15}px`; // Random size between 15px and 25px
+      coin.style.height = coin.style.width; // Keep it circular
+      coin.style.animationDuration = `${Math.random() * (8 - 4) + 4}s`; // Random duration between 4s and 8s
+      coin.style.animationDelay = `${Math.random() * -10}s`; // Random negative delay to start at different points
+      coinFallContainer.appendChild(coin);
+    }
+  </script>
+</body>
+</html>

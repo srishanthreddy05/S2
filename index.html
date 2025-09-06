@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to S2 | Digital Token Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #144ee3;
+      --primary-dark: #0a1876;
+      --secondary: #48c6ef;
+      --gaming-accent: #ff6b35;
+      --gaming-success: #00e676;
+      --gaming-purple: #9c27b0;
+      --gaming-gold: #ffc107;
+      --gaming-danger: #ff1744;
+      --background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      --card-bg: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.15);
+      --shadow: 0 20px 40px rgba(0,0,0,0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #8892b0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .background-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(72, 198, 239, 0.1);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) { width: 120px; height: 120px; left: 5%; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 80px; height: 80px; left: 15%; animation-delay: 1.5s; }
+    .particle:nth-child(3) { width: 60px; height: 60px; left: 75%; animation-delay: 3s; }
+    .particle:nth-child(4) { width: 100px; height: 100px; left: 85%; animation-delay: 4.5s; }
+    .particle:nth-child(5) { width: 40px; height: 40px; left: 45%; animation-delay: 6s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+      50% { transform: translateY(-150px) rotate(180deg); opacity: 0.8; }
+    }
+
+    .main-container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .hero-section {
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 60px;
+      padding: 60px 30px;
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      border: 1.5px solid var(--card-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(72, 198, 239, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--gaming-accent), var(--secondary));
+      border-radius: 24px;
+      margin: 0 auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 15px 40px rgba(72, 198, 239, 0.4);
+      animation: pulse 3s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shine 4s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--gaming-purple) 50%, var(--gaming-accent) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      margin-bottom: 20px;
+      letter-spacing: -2px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      font-weight: 400;
+      line-height: 1.6;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      font-weight: 500;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1s ease-out 0.6s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      min-height: 56px;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gaming-purple) 0%, var(--primary) 100%);
+      color: white;
+      box-shadow: 0 8px 32px rgba(156, 39, 176, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border: 2px solid var(--card-border);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(156, 39, 176, 0.4);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--secondary);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    .features-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--gaming-accent) 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 50px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      transition: left 0.8s;
+    }
+
+    .feature-card:hover::before {
+      left: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--secondary);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+    }
+
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+    }
+
+    .transactions-icon { background: linear-gradient(135deg, var(--gaming-success), #00c853); }
+    .mining-icon { background: linear-gradient(135deg, var(--gaming-accent), #ff5722); }
+    .checkin-icon { background: linear-gradient(135deg, var(--gaming-gold), #f57f17); }
+    .arbitrage-icon { background: linear-gradient(135deg, var(--gaming-purple), var(--primary)); }
+    .staking-icon { background: linear-gradient(135deg, var(--secondary), #26c6da); }
+    .nft-icon { background: linear-gradient(135deg, var(--gaming-danger), #e91e63); }
+
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .feature-badge {
+      background: var(--gaming-gold);
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    .feature-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .feature-benefits {
+      list-style: none;
+      margin-bottom: 25px;
+    }
+
+    .feature-benefits li {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .feature-benefits li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--gaming-success);
+      font-weight: bold;
+    }
+
+    .feature-button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-feature-primary {
+      background: linear-gradient(135deg, var(--gaming-success) 0%, #00c853 100%);
+      color: white;
+    }
+
+    .btn-feature-secondary {
+      background: linear-gradient(135deg, var(--gaming-purple) 0%, var(--primary) 100%);
+      color: white;
+    }
+
+    .btn-feature-accent {
+      background: linear-gradient(135deg, var(--gaming-accent) 0%, #ff5722 100%);
+      color: white;
+    }
+
+    .btn-feature-disabled {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .feature-button:not(.btn-feature-disabled):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .why-s2-section {
+      max-width: 800px;
+      margin: 80px auto 60px;
+      text-align: center;
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      border: 1.5px solid var(--card-border);
+      border-radius: 24px;
+      padding: 50px 40px;
+      box-shadow: var(--shadow);
+    }
+
+    .why-s2-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .why-item {
+      text-align: center;
+    }
+
+    .why-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary), var(--gaming-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 30px rgba(72, 198, 239, 0.3);
+    }
+
+    .why-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .why-description {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 40px 20px;
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .feature-card {
+        padding: 25px;
+      }
+
+      .buttons-container {
+        flex-direction: column;
+      }
+
+      .why-s2-section {
+        padding: 30px 20px;
+        margin: 40px auto 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .why-s2-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-animation">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <div class="main-container">
+    <div class="hero-section">
+      <div class="logo">S2</div>
+      
+      <h1>Welcome to S2</h1>
+      <p class="subtitle">
+        The Future of Digital Token Management
+      </p>
+      <p class="tagline">
+        Mine, Trade, Stake, and Earn with the most advanced token platform
+      </p>
+
+      <div class="buttons-container">
+        <a href="signup.html" class="btn btn-primary">
+          <i class="fas fa-rocket btn-icon"></i>
+          Get Started
+        </a>
+        <a href="login.html" class="btn btn-secondary">
+          <i class="fas fa-sign-in-alt btn-icon"></i>
+          Sign In
+        </a>
+      </div>
+    </div>
+
+
+
+<div class="why-s2-section">
+  <h2 class="section-title">Why Choose S2?</h2>
+  <p class="section-subtitle">
+    Built for the future of digital finance with cutting-edge technology and user-first design
+  </p>
+  
+  <div class="why-s2-grid">
+    <div class="why-item">
+      <div class="why-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <h3 class="why-title">Security First</h3>
+      <p class="why-description">Enterprise-grade security with advanced encryption and multi-layer protection</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <i class="fas fa-bolt"></i>
+      </div>
+      <h3 class="why-title">Lightning Fast</h3>
+      <p class="why-description">Ultra-fast transactions with minimal fees and instant confirmation</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <h3 class="why-title">Community Driven</h3>
+      <p class="why-description">Built by the community, for the community with transparent governance</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <h3 class="why-title">Multiple Earning Ways</h3>
+      <p class="why-description">Mining, staking, trading, and rewards - maximize your earning potential</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <i class="fas fa-exchange-alt"></i>
+      </div>
+      <h3 class="why-title">Arbitrage Opportunities</h3>
+      <p class="why-description">Leverage market differences to earn efficiently across exchanges with minimal risk</p>
+    </div>
+
+    <div class="why-item">
+      <div class="why-icon">
+        <i class="fas fa-mobile-alt"></i>
+      </div>
+     <h3 class="why-title">User-Friendly Experience</h3>
+<p class="why-description">Intuitive design, smooth navigation, and responsive interface for everyone</p>
+
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    // Enhanced particle animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const particles = document.querySelectorAll('.particle');
+      
+      particles.forEach((particle, index) => {
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = (index * 1.5) + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+      });
+    });
+
+    // Button click effects
+    const buttons = document.querySelectorAll('.btn, .feature-button');
+    
+    buttons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        if (this.disabled) return;
+        
+        // Ripple effect
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.3);
+          transform: scale(0);
+          animation: ripple 0.6s linear;
+          width: ${size}px;
+          height: ${size}px;
+          left: ${x}px;
+          top: ${y}px;
+          pointer-events: none;
+        `;
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
+    // Add ripple animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>

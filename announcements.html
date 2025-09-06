@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2 Announcements</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0D0F18;
+            --bg-gradient-start: #1A1C2D;
+            --bg-gradient-end: #0D0F18;
+            --primary-accent: #8A2BE2;
+            --secondary-accent: #48C6EF;
+            --success: #00C851;
+            --warning: #ff6b35;
+            --danger: #ff1744;
+            --glass: rgba(26, 28, 45, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.35);
+            --text-primary: #F0F2F5;
+            --text-secondary: #A0AEC0;
+            --font-primary: 'Poppins', sans-serif;
+            --font-secondary: 'Inter', sans-serif;
+            
+            /* Enhanced priority colors */
+            --priority-high-bg: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+            --priority-high-border: #ff4757;
+            --priority-high-shadow: rgba(255, 71, 87, 0.4);
+            
+            --priority-medium-bg: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+            --priority-medium-border: #ffa726;
+            --priority-medium-shadow: rgba(255, 167, 38, 0.4);
+            
+            --priority-low-bg: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+            --priority-low-border: #66bb6a;
+            --priority-low-shadow: rgba(102, 187, 106, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            font-family: var(--font-secondary);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Aurora Background Effect */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 60vh;
+            max-width: 700px;
+            max-height: 700px;
+            background-image: radial-gradient(circle, var(--primary-accent), transparent 60%);
+            opacity: 0.15;
+            filter: blur(120px);
+            animation: aurora-pulse 15s infinite alternate ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes aurora-pulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.1; }
+            100% { transform: translate(-45%, -55%) scale(1.2); opacity: 0.2; }
+        }
+
+        .container {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            flex: 0 0 auto;
+            height: 110px;
+        }
+
+        .header h1 {
+            font-family: var(--font-primary);
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+        
+        /* --- NEW STYLE FOR BACK BUTTON --- */
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        /* --- END OF NEW STYLE --- */
+
+        .user-info {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ffa726, #ff9800);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 167, 38, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-details #userEmail {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .online-indicator {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        .auth-container {
+            padding: 60px 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .auth-container h2 {
+            font-family: var(--font-primary);
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .auth-input {
+            padding: 16px 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-family: var(--font-secondary);
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--secondary-accent);
+            box-shadow: 0 0 20px rgba(72, 198, 239, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .auth-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .auth-btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-primary);
+            background-image: linear-gradient(to right, var(--primary-accent) 0%, var(--secondary-accent) 51%, var(--primary-accent) 100%);
+            background-size: 200% auto;
+            color: white;
+        }
+
+        .auth-btn:hover:not(:disabled) {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-toggle {
+            margin-top: 30px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .auth-toggle:hover {
+            color: var(--secondary-accent);
+        }
+
+        /* Announcements Container */
+        .announcements-container {
+            height: calc(700px - 110px - 130px);
+            overflow-y: auto;
+            padding: 30px;
+            background: rgba(13, 15, 24, 0.3);
+            flex: 0 0 auto;
+        }
+
+        /* Enhanced scrollbar styling */
+        .announcements-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .announcements-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .announcements-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+            transition: all 0.3s ease;
+        }
+
+        .announcements-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #9333ea 0%, #0ea5e9 100%);
+        }
+
+        .announcements-container {
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-accent) transparent;
+        }
+
+        /* Enhanced Announcement Cards */
+        .announcement {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(15px);
+            animation: announcementSlide 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .announcement:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .announcement.priority-high {
+            border-left: 6px solid var(--priority-high-border);
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, var(--glass) 100%);
+            box-shadow: 0 8px 25px var(--priority-high-shadow);
+        }
+
+        .announcement.priority-medium {
+            border-left: 6px solid var(--priority-medium-border);
+            background: linear-gradient(135deg, rgba(255, 167, 38, 0.1) 0%, var(--glass) 100%);
+            box-shadow: 0 8px 25px var(--priority-medium-shadow);
+        }
+
+        .announcement.priority-low {
+            border-left: 6px solid var(--priority-low-border);
+            background: linear-gradient(135deg, rgba(102, 187, 106, 0.1) 0%, var(--glass) 100%);
+            box-shadow: 0 8px 25px var(--priority-low-shadow);
+        }
+
+        @keyframes announcementSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .announcement-title {
+            font-family: var(--font-primary);
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .announcement-meta {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* Beautiful Priority Badges */
+        .announcement-priority {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: inline-block;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .announcement-priority:hover {
+            transform: scale(1.05);
+        }
+
+        .priority-high { 
+            background: var(--priority-high-bg);
+            color: white; 
+            box-shadow: 0 4px 15px var(--priority-high-shadow);
+        }
+
+        .priority-medium { 
+            background: var(--priority-medium-bg);
+            color: white; 
+            box-shadow: 0 4px 15px var(--priority-medium-shadow);
+        }
+
+        .priority-low { 
+            background: var(--priority-low-bg);
+            color: white; 
+            box-shadow: 0 4px 15px var(--priority-low-shadow);
+        }
+
+        .announcement-date {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .announcement-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .announcement-content {
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 16px;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        .announcement-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .author-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Admin Input Panel */
+        .admin-input-container {
+            height: 130px;
+            padding: 20px;
+            background: var(--glass);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 0 0 auto;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .priority-select {
+            padding: 10px 15px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: var(--font-secondary);
+            font-weight: 500;
+        }
+
+        .priority-select:focus {
+            outline: none;
+            border-color: var(--secondary-accent);
+            box-shadow: 0 0 10px rgba(72, 198, 239, 0.3);
+        }
+
+        .announcement-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
+            resize: vertical;
+            min-height: 45px;
+            max-height: 70px;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-input:focus {
+            outline: none;
+            border-color: var(--secondary-accent);
+            box-shadow: 0 0 15px rgba(72, 198, 239, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .announcement-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .publish-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 120px;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .publish-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .publish-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff4757, #ff6b7a);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .no-announcements {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-announcements i {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            opacity: 0.3;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .no-announcements h3 {
+            font-family: var(--font-primary);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        /* Loading Shimmer Effect */
+        .loading-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: loading-shimmer-anim 1.5s infinite linear;
+            border-radius: 6px;
+        }
+
+        @keyframes loading-shimmer-anim { 
+            0% { background-position: 200% 0; } 
+            100% { background-position: -200% 0; } 
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 20px;
+                height: 80px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            /* --- RESPONSIVE STYLE FOR BACK BUTTON --- */
+            .back-btn {
+                left: 20px;
+                padding: 8px 12px;
+                gap: 0;
+            }
+            .back-btn span {
+                display: none; /* Hide text on mobile */
+            }
+            /* --- END OF RESPONSIVE STYLE --- */
+
+            .user-info {
+                right: 20px;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .announcements-container {
+                height: calc(100vh - 80px - 110px);
+                padding: 20px;
+            }
+
+            .announcement {
+                padding: 25px;
+                margin-bottom: 20px;
+            }
+
+            .announcement-title {
+                font-size: 1.2rem;
+            }
+
+            .admin-input-container {
+                height: 110px;
+                padding: 15px;
+            }
+
+            .admin-controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .priority-select, .publish-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="authSection" class="auth-container">
+            <h2>S2 Announcements</h2>
+            <div class="auth-form">
+                <input type="email" id="emailInput" class="auth-input" placeholder="Email address" required>
+                <input type="password" id="passwordInput" class="auth-input" placeholder="Password" required>
+                <button id="authBtn" class="auth-btn">Sign In</button>
+                <div id="authToggle" class="auth-toggle">
+                    Don't have an account? <span style="color: var(--secondary-accent); font-weight: 500;">Sign up</span>
+                </div>
+                <div id="authError" class="error hidden"></div>
+            </div>
+        </div>
+
+        <div id="announcementsSection" class="hidden">
+            <div class="header">
+                <a href="dashboard.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Dashboard</span>
+                </a>
+                <h1><i class="fas fa-bullhorn" style="margin-right: 12px;"></i>S2 Announcements</h1>
+                <div class="user-info">
+                    <div class="user-details">
+                        <div id="userEmail"></div>
+                        <div class="online-indicator">
+                            <i class="fas fa-circle" style="color: var(--success); font-size: 8px; margin-right: 5px;"></i>
+                            Online
+                        </div>
+                    </div>
+                    <div id="adminBadge" class="admin-badge hidden">ADMIN</div>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="announcementsContainer" class="announcements-container">
+                <div class="loading">
+                    <div class="loading-shimmer" style="height: 20px; width: 200px; margin: 0 auto;"></div>
+                    <div style="margin-top: 10px; font-size: 14px;">Loading announcements...</div>
+                </div>
+            </div>
+
+            <div id="adminInputContainer" class="admin-input-container hidden">
+                <div class="admin-controls">
+                    <select id="prioritySelect" class="priority-select">
+                        <option value="low">🟢 Low Priority</option>
+                        <option value="medium">🟡 Medium Priority</option>
+                        <option value="high">🔴 High Priority</option>
+                    </select>
+                    <button id="publishBtn" class="publish-btn" disabled>
+                        <i class="fas fa-paper-plane"></i> Publish
+                    </button>
+                </div>
+                <textarea id="announcementInput" class="announcement-input" placeholder="Write your announcement here..." maxlength="1000"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            query, 
+            orderBy, 
+            onSnapshot,
+            serverTimestamp,
+            limit,
+            doc,
+            getDoc
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4wI4--LzSuGVjaBRPEdUOq4sPpWmaZJI",
+            authDomain: "s2-app-49eca.firebaseapp.com",
+            projectId: "s2-app-49eca",
+            storageBucket: "s2-app-49eca.appspot.com",
+            messagingSenderId: "274842107242",
+            appId: "1:274842107242:web:6df70686c39a27742e7913",
+            measurementId: "G-PH6KS2DZ61"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Admin UID (using your actual UID)
+        const ADMIN_UIDS = ["zqGjbKGVouWfYsdCYQtKTVwudVO2"];
+
+        // DOM elements
+        const authSection = document.getElementById('authSection');
+        const announcementsSection = document.getElementById('announcementsSection');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const authBtn = document.getElementById('authBtn');
+        const authToggle = document.getElementById('authToggle');
+        const authError = document.getElementById('authError');
+        const userEmail = document.getElementById('userEmail');
+        const adminBadge = document.getElementById('adminBadge');
+        const announcementsContainer = document.getElementById('announcementsContainer');
+        const adminInputContainer = document.getElementById('adminInputContainer');
+        const announcementInput = document.getElementById('announcementInput');
+        const prioritySelect = document.getElementById('prioritySelect');
+        const publishBtn = document.getElementById('publishBtn');
+
+        let isLoginMode = true;
+        let currentUser = null;
+        let isAdmin = false;
+        let announcementsUnsubscribe = null;
+
+        // Check if user is admin using UID
+        function checkAdminStatus(uid) {
+            return ADMIN_UIDS.includes(uid);
+        }
+
+        // Input handler for announcements
+        announcementInput.addEventListener('input', function() {
+            publishBtn.disabled = !this.value.trim();
+        });
+
+        // Auth toggle
+        authToggle.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                authBtn.textContent = 'Sign In';
+                authToggle.innerHTML = `Don't have an account? <span style="color: var(--secondary-accent); font-weight: 500;">Sign up</span>`;
+            } else {
+                authBtn.textContent = 'Sign Up';
+                authToggle.innerHTML = `Already have an account? <span style="color: var(--secondary-accent); font-weight: 500;">Sign in</span>`;
+            }
+            hideError();
+        });
+
+        // Show/hide error
+        function showError(message) {
+            authError.textContent = message;
+            authError.classList.remove('hidden');
+        }
+
+        function hideError() {
+            authError.classList.add('hidden');
+        }
+
+        // Auth form submission
+        authBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            try {
+                authBtn.disabled = true;
+                authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                hideError();
+
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showError(getAuthErrorMessage(error.code));
+            } finally {
+                authBtn.disabled = false;
+                authBtn.textContent = isLoginMode ? 'Sign In' : 'Sign Up';
+            }
+        });
+
+        // Handle Enter key in auth forms
+        [emailInput, passwordInput].forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    authBtn.click();
+                }
+            });
+        });
+
+        // Get user-friendly error messages
+        function getAuthErrorMessage(errorCode) {
+            switch (errorCode) {
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                case 'auth/invalid-credential':
+                    return 'Invalid email or password';
+                case 'auth/email-already-in-use':
+                    return 'Email already registered';
+                case 'auth/weak-password':
+                    return 'Password is too weak';
+                case 'auth/invalid-email':
+                    return 'Invalid email address';
+                case 'auth/network-request-failed':
+                    return 'Network error. Please try again';
+                default:
+                    return 'An error occurred. Please try again';
+            }
+        }
+
+        // Auth state observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                isAdmin = checkAdminStatus(user.uid);
+                showAnnouncementsSection();
+                loadAnnouncements();
+            } else {
+                currentUser = null;
+                isAdmin = false;
+                showAuthSection();
+            }
+        });
+
+        function showAuthSection() {
+            authSection.classList.remove('hidden');
+            announcementsSection.classList.add('hidden');
+            if (announcementsUnsubscribe) {
+                announcementsUnsubscribe();
+                announcementsUnsubscribe = null;
+            }
+        }
+
+        function showAnnouncementsSection() {
+            authSection.classList.add('hidden');
+            announcementsSection.classList.remove('hidden');
+            userEmail.textContent = currentUser.email;
+            
+            // Show admin controls if user is admin
+            if (isAdmin) {
+                adminBadge.classList.remove('hidden');
+                adminInputContainer.classList.remove('hidden');
+                announcementInput.focus();
+            } else {
+                adminBadge.classList.add('hidden');
+                adminInputContainer.classList.add('hidden');
+            }
+        }
+
+        // Publish announcement (admin only)
+        async function publishAnnouncement() {
+            if (!isAdmin) return;
+            
+            const content = announcementInput.value.trim();
+            if (!content) return;
+
+            try {
+                publishBtn.disabled = true;
+                announcementInput.disabled = true;
+                publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+
+                await addDoc(collection(db, 'announcements'), {
+                    title: content.split('\n')[0].substring(0, 100), // First line as title
+                    content: content,
+                    priority: prioritySelect.value,
+                    authorEmail: currentUser.email,
+                    authorName: currentUser.email.split('@')[0],
+                    timestamp: serverTimestamp(),
+                    createdAt: new Date()
+                });
+
+                announcementInput.value = '';
+                prioritySelect.value = 'low';
+            } catch (error) {
+                console.error('Error publishing announcement:', error);
+                alert('Failed to publish announcement. Please try again.');
+            } finally {
+                publishBtn.disabled = false;
+                announcementInput.disabled = false;
+                publishBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish';
+                announcementInput.focus();
+            }
+        }
+
+        publishBtn.addEventListener('click', publishAnnouncement);
+
+        announcementInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                publishAnnouncement();
+            }
+        });
+
+        // Load announcements
+        function loadAnnouncements() {
+            if (announcementsUnsubscribe) {
+                announcementsUnsubscribe();
+            }
+
+            const announcementsQuery = query(
+                collection(db, 'announcements'),
+                orderBy('timestamp', 'desc'),
+                limit(50)
+            );
+
+            announcementsUnsubscribe = onSnapshot(announcementsQuery, (snapshot) => {
+                const announcements = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    announcements.push({ 
+                        id: doc.id, 
+                        ...data,
+                        displayTime: data.timestamp ? data.timestamp : data.createdAt
+                    });
+                });
+
+                displayAnnouncements(announcements);
+            }, (error) => {
+                console.error('Error loading announcements:', error);
+                announcementsContainer.innerHTML = '<div class="error">Failed to load announcements. Please refresh the page.</div>';
+            });
+        }
+
+        // Display announcements
+        function displayAnnouncements(announcements) {
+            announcementsContainer.innerHTML = '';
+
+            if (announcements.length === 0) {
+                announcementsContainer.innerHTML = `
+                    <div class="no-announcements">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>No announcements yet</h3>
+                        <p>Stay tuned for updates from the S2 team!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            announcements.forEach((announcement) => {
+                displayAnnouncement(announcement);
+            });
+
+            setTimeout(() => {
+                announcementsContainer.scrollTop = 0; // Scroll to top for newest
+            }, 100);
+        }
+
+        // Display single announcement
+        function displayAnnouncement(announcement) {
+            const announcementEl = document.createElement('div');
+            announcementEl.className = `announcement priority-${announcement.priority}`;
+
+            const date = announcement.displayTime ? 
+                (announcement.displayTime.toDate ? announcement.displayTime.toDate() : new Date(announcement.displayTime)) : 
+                new Date();
+
+            const dateString = date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+
+            const timeString = date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Enhanced priority labels with emojis
+            const priorityLabels = {
+                high: '🚨 URGENT',
+                medium: '⚠️ IMPORTANT', 
+                low: '📢 INFO'
+            };
+
+            announcementEl.innerHTML = `
+                <div class="announcement-header">
+                    <h3 class="announcement-title">${escapeHtml(announcement.title || announcement.content.split('\n')[0].substring(0, 100))}</h3>
+                    <div class="announcement-meta">
+                        <div class="announcement-priority priority-${announcement.priority}">
+                            ${priorityLabels[announcement.priority] || priorityLabels.low}
+                        </div>
+                        <div class="announcement-date">${dateString}</div>
+                        <div class="announcement-time">${timeString}</div>
+                    </div>
+                </div>
+                <div class="announcement-content">${escapeHtml(announcement.content)}</div>
+                <div class="announcement-author">
+                    <div class="author-avatar">${(announcement.authorName || 'Admin').slice(0, 2).toUpperCase()}</div>
+                    <div class="author-info">
+                        Posted by <strong>${escapeHtml(announcement.authorName || 'Admin')}</strong>
+                    </div>
+                </div>
+            `;
+
+            announcementsContainer.appendChild(announcementEl);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        // Initialize publish button state
+        publishBtn.disabled = true;
+
+        // Double-click to sign out (hidden feature)
+        let clickCount = 0;
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('user-avatar')) {
+                clickCount++;
+                setTimeout(() => { clickCount = 0; }, 300);
+                if (clickCount === 2) {
+                    signOut(auth);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

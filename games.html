@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S2 Leaderboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --bg-dark: #0D0F18;
+  --primary-accent: #8A2BE2;
+  --secondary-accent: #48C6EF;
+  --text-primary: #F0F2F5;
+  --text-secondary: #A0AEC0;
+  --glass: rgba(26, 28, 45, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.35);
+  --success: #00e676;
+  --warning: #ff9800;
+  --error: #ff1744;
+}
+
+body {
+  background: linear-gradient(135deg, #0D0F18 0%, #1a1a2e 50%, #16213e 100%);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  padding: 40px 20px;
+  margin: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(138, 43, 226, 0.4);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  box-shadow: var(--shadow);
+  padding: 30px;
+  overflow-x: auto;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--secondary-accent);
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.transactions-table th {
+  background: rgba(255,255,255,0.05);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.transactions-table tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.highlight {
+  background: rgba(138,43,226,0.2) !important;
+  border-left: 4px solid var(--primary-accent);
+}
+
+.address-code {
+  font-family: 'Monaco', 'Courier New', monospace;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.amount-cell {
+  font-weight: 600;
+  color: var(--success);
+  text-align: right;
+}
+
+.rank-cell {
+  font-weight: 700;
+  color: var(--secondary-accent);
+  text-align: center;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.username {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.wallet-address {
+  font-family: 'Monaco', monospace;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-accent);
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.status-message.loading {
+  color: var(--secondary-accent);
+}
+
+.status-message.error {
+  color: var(--error);
+}
+
+.status-message.success {
+  color: var(--success);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.trophy-icon {
+  margin-right: 8px;
+  color: var(--warning);
+}
+
+.medal-1 { color: #ffd700; }
+.medal-2 { color: #c0c0c0; }
+.medal-3 { color: #cd7f32; }
+
+.personal-rank-section {
+  margin-top: 30px;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+}
+
+.personal-rank-header {
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #f4f6fb;
+  color: #333;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #e2e6f0;
+  border-color: #ccc;
+  color: #000;
+}
+.back-btn i {
+  color: #444;
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .transactions-table th,
+  .transactions-table td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+  
+  .user-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+ <a href="dashboard.html" class="back-btn">
+  <i class="fas fa-arrow-left"></i> Back to Dashboard
+</a>
+  
+  <div class="header">
+    <h1><i class="fas fa-trophy trophy-icon"></i>S2 Leaderboard</h1>
+    <p>Top 10 S2 token holders </p>
+  </div>
+
+  <div class="controls">
+    <button id="refreshBtn" class="btn">
+      <i class="fas fa-sync-alt"></i>
+      Refresh Leaderboard
+    </button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="totalUsers">-</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="progressContainer" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="status-message loading">
+        <span class="loading-spinner"></span>
+        <span id="progressText">Loading...</span>
+      </div>
+    </div>
+
+    <table id="leaderboard" class="transactions-table">
+      <thead>
+        <tr>
+          <th style="text-align: center;">Rank</th>
+          <th>User / Wallet</th>
+          <th style="text-align: right;">Balance (S2)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="3" class="status-message">
+            <i class="fas fa-rocket" style="margin-right: 10px;"></i>
+            Click "Refresh Leaderboard" to load data
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Personal Rank Section -->
+    <div id="personalRankSection" class="personal-rank-section" style="display: none;">
+      <div class="personal-rank-header">
+        <i class="fas fa-user"></i>
+        Your Rank
+      </div>
+      <table class="transactions-table">
+        <tbody id="personalRank">
+          <!-- Personal rank will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// ---------- Firebase imports ----------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ---------- Firebase config ----------
+const firebaseConfig = {
+  apiKey: "AIzaSyD4wI4--LzSuGVjaBRPEdUOq4sPpWmaZJI",
+  authDomain: "s2-app-49eca.firebaseapp.com",
+  projectId: "s2-app-49eca",
+  storageBucket: "s2-app-49eca.appspot.com",
+  messagingSenderId: "274842107242",
+  appId: "1:274842107242:web:6df70686c39a27742e7913"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ---------- Configuration ----------
+const ETHERSCAN_API_KEY = "RH8J9Z6GTT41PPQ7SEAMHIIS55IEGWFYFD";
+const TOKEN_CONTRACT = "0x56EaaF87a9f4B2cC413DF472B23950b2a8Db2FCC";
+
+// Network configuration (Sepolia only)
+const NETWORK = {
+  name: 'Sepolia',
+  apiBase: 'https://api-sepolia.etherscan.io/api',
+  explorerBase: 'https://sepolia.etherscan.io'
+};
+
+// DOM elements
+const leaderboardEl = document.getElementById("leaderboard").querySelector("tbody");
+const personalRankEl = document.getElementById("personalRank");
+const personalRankSection = document.getElementById("personalRankSection");
+const refreshBtn = document.getElementById("refreshBtn");
+const progressContainer = document.getElementById("progressContainer");
+const progressFill = document.getElementById("progressFill");
+const progressText = document.getElementById("progressText");
+const totalUsersEl = document.getElementById("totalUsers");
+
+// State
+let currentUserAddress = null;
+let isLoading = false;
+
+// ---------- Helper Functions ----------
+function formatToken(valueStr, decimalsStr) {
+  try {
+    const value = BigInt(valueStr || "0");
+    const decimals = Number(decimalsStr || 18);
+    const base = BigInt(10) ** BigInt(decimals);
+    const whole = value / base;
+    const frac = value % base;
+    const fracStr = frac.toString().padStart(decimals, "0").replace(/0+$/, "");
+    return fracStr ? `${whole}.${fracStr}` : whole.toString();
+  } catch {
+    return "0";
+  }
+}
+
+function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K';
+  }
+  return num.toString();
+}
+
+function shortAddr(addr) {
+  if (!addr || typeof addr !== 'string') return "";
+  if (addr.length < 10) return addr;
+  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+}
+
+function getUserInitials(username, address) {
+  if (username && username.length >= 2) {
+    return username.slice(0, 2).toUpperCase();
+  }
+  if (address && address.length >= 4) {
+    return address.slice(2, 4).toUpperCase();
+  }
+  return "??";
+}
+
+function getRankIcon(rank) {
+  switch(rank) {
+    case 1: return '<i class="fas fa-crown medal-1"></i>';
+    case 2: return '<i class="fas fa-medal medal-2"></i>';
+    case 3: return '<i class="fas fa-medal medal-3"></i>';
+    default: return rank;
+  }
+}
+
+function renderUserRow(user, rank, isPersonalRank = false) {
+  const isCurrentUser = currentUserAddress && 
+    user.wallet.toLowerCase() === currentUserAddress.toLowerCase();
+  
+  return `
+    <tr class="${isCurrentUser ? 'highlight' : ''}">
+      <td class="rank-cell">${getRankIcon(rank)}</td>
+      <td>
+        <div class="user-cell">
+          <div class="user-avatar">${getUserInitials(user.username, user.wallet)}</div>
+          <div>
+            ${user.username ? 
+              `<div class="username">${user.username}</div>
+               <div class="wallet-address">${shortAddr(user.wallet)}</div>` :
+              `<div class="address-code">${shortAddr(user.wallet)}</div>`
+            }
+            ${isCurrentUser ? '<i class="fas fa-star" style="color: var(--warning); margin-left: 8px;"></i>' : ''}
+          </div>
+        </div>
+      </td>
+      <td class="amount-cell">${formatNumber(user.balance)}</td>
+    </tr>
+  `;
+}
+
+// Add delay function for rate limiting
+async function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Update progress
+function updateProgress(current, total, message) {
+  const percentage = (current / total) * 100;
+  progressFill.style.width = `${percentage}%`;
+  progressText.textContent = message || `${current}/${total}`;
+}
+
+// Show/hide progress
+function showProgress(show) {
+  progressContainer.style.display = show ? 'block' : 'none';
+}
+
+// ---------- API Functions ----------
+async function getBalance(address) {
+  try {
+    const url = `${NETWORK.apiBase}?module=account&action=tokenbalance&contractaddress=${TOKEN_CONTRACT}&address=${address}&tag=latest&apikey=${ETHERSCAN_API_KEY}`;
+    
+    const res = await fetch(url);
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
+    const data = await res.json();
+    if (data.status !== "1") {
+      console.warn(`Balance fetch failed for ${address}:`, data.message || data.result);
+      return "0";
+    }
+    
+    return formatToken(data.result, 18);
+  } catch (error) {
+    console.error(`Error fetching balance for ${address}:`, error);
+    return "0";
+  }
+}
+
+// ---------- Firebase Functions ----------
+async function getCurrentUserAddress() {
+  try {
+    const user = auth.currentUser;
+    if (!user) return null;
+    
+    const usersSnap = await getDocs(collection(db, "users"));
+    const currentUserDoc = usersSnap.docs.find(d => d.id === user.uid);
+    return currentUserDoc?.data().walletAddress || null;
+  } catch (error) {
+    console.error('Error getting current user address:', error);
+    return null;
+  }
+}
+
+// ---------- Main Leaderboard Function ----------
+async function loadLeaderboard() {
+  if (isLoading) return;
+  
+  try {
+    isLoading = true;
+    refreshBtn.disabled = true;
+    
+    // Reset stats and hide personal rank
+    totalUsersEl.textContent = '-';
+    personalRankSection.style.display = 'none';
+    
+    // Show initial loading
+    leaderboardEl.innerHTML = `
+      <tr>
+        <td colspan="3" class="status-message loading">
+          <span class="loading-spinner"></span>
+          Connecting to Firebase...
+        </td>
+      </tr>
+    `;
+    
+    // Get current user address
+    currentUserAddress = await getCurrentUserAddress();
+    
+    // Fetch users from Firebase
+    const usersSnap = await getDocs(collection(db, "users"));
+    
+    if (usersSnap.empty) {
+      leaderboardEl.innerHTML = `
+        <tr>
+          <td colspan="3" class="status-message error">
+            <i class="fas fa-exclamation-triangle"></i>
+            No users found in database
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Process wallet addresses
+    const wallets = [];
+    usersSnap.forEach(doc => {
+      const data = doc.data();
+      if (data.walletAddress && data.walletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+        wallets.push({
+          uid: doc.id,
+          wallet: data.walletAddress,
+          username: data.username || null
+        });
+      }
+    });
+
+    if (wallets.length === 0) {
+      leaderboardEl.innerHTML = `
+        <tr>
+          <td colspan="3" class="status-message error">
+            <i class="fas fa-wallet"></i>
+            No valid wallet addresses found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Update stats
+    totalUsersEl.textContent = wallets.length;
+    
+    // Show progress and start fetching balances
+    showProgress(true);
+    leaderboardEl.innerHTML = `
+      <tr>
+        <td colspan="3" class="status-message loading">
+          <span class="loading-spinner"></span>
+          Fetching balances from ${NETWORK.name}...
+        </td>
+      </tr>
+    `;
+
+    // Fetch balances with rate limiting and progress updates
+    const balances = [];
+    for (let i = 0; i < wallets.length; i++) {
+      const user = wallets[i];
+      updateProgress(i + 1, wallets.length, `Fetching balance ${i + 1}/${wallets.length}`);
+      
+      const balance = await getBalance(user.wallet);
+      balances.push({
+        ...user,
+        balance: Number(balance)
+      });
+      
+      // Add delay to respect rate limits (except for last iteration)
+      if (i < wallets.length - 1) {
+        await delay(200); // 200ms delay between requests
+      }
+    }
+
+    // Hide progress
+    showProgress(false);
+
+    // Sort by balance (descending)
+    balances.sort((a, b) => b.balance - a.balance);
+
+    // Check if we have users with balances
+    if (balances.length === 0 || balances.every(u => u.balance === 0)) {
+      leaderboardEl.innerHTML = `
+        <tr>
+          <td colspan="3" class="status-message error">
+            <i class="fas fa-chart-line"></i>
+            No users with token balances found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Render top 10 leaderboard
+    const top10Users = balances.slice(0, 10);
+    
+    leaderboardEl.innerHTML = top10Users.map((user, index) => {
+      const rank = index + 1;
+      return renderUserRow(user, rank);
+    }).join("");
+
+    // Handle personal rank display
+    if (currentUserAddress) {
+      const currentUserIndex = balances.findIndex(user => 
+        user.wallet.toLowerCase() === currentUserAddress.toLowerCase()
+      );
+      
+      if (currentUserIndex !== -1) {
+        const currentUserRank = currentUserIndex + 1;
+        
+        // Show personal rank if user is not in top 10
+        if (currentUserRank > 10) {
+          const currentUser = balances[currentUserIndex];
+          personalRankEl.innerHTML = renderUserRow(currentUser, currentUserRank, true);
+          personalRankSection.style.display = 'block';
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error('Leaderboard loading error:', error);
+    leaderboardEl.innerHTML = `
+      <tr>
+        <td colspan="3" class="status-message error">
+          <i class="fas fa-exclamation-triangle"></i>
+          Error loading leaderboard: ${error.message}
+        </td>
+      </tr>
+    `;
+  } finally {
+    isLoading = false;
+    refreshBtn.disabled = false;
+    showProgress(false);
+  }
+}
+
+// ---------- Event Listeners ----------
+refreshBtn.addEventListener('click', loadLeaderboard);
+
+// ---------- Authentication & Initialization ----------
+onAuthStateChanged(auth, async (user) => {
+  try {
+    // Sign in anonymously if not already signed in
+    if (!user) {
+      await signInAnonymously(auth);
+    }
+    
+    console.log('Firebase authentication ready');
+  } catch (error) {
+    console.warn('Firebase auth failed:', error);
+    leaderboardEl.innerHTML = `
+      <tr>
+        <td colspan="3" class="status-message error">
+          <i class="fas fa-exclamation-triangle"></i>
+          Authentication failed. Some features may not work.
+        </td>
+      </tr>
+    `;
+  }
+});
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('S2 Leaderboard initialized');
+});
+
+// Auto-refresh every 5 minutes
+setInterval(() => {
+  if (!isLoading) {
+    console.log('Auto-refreshing leaderboard...');
+    loadLeaderboard();
+  }
+}, 5 * 60 * 1000); // 5 minutes
+</script>
+</body>
+</html>
