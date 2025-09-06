@@ -609,11 +609,11 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking in...';
       
       try {
-        const response = await fetch("http://localhost:3010/daily-checkin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: walletAddress })
-        });
+       const response = await fetch("https://my-backend-gs60.onrender.com/daily-checkin", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ wallet: walletAddress })
+});
         const result = await response.json();
         alert(result.success ? "✅ Check-in successful! 2 S2 Tokens sent." : result.error);
         if (result.success) updateBalance();
@@ -632,11 +632,12 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting...';
       
       try {
-        const res = await fetch("http://localhost:3010/mine", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: walletAddress })
-        });
+        const res = await fetch("https://my-backend-gs60.onrender.com/mine", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ wallet: walletAddress })
+});
+
         const result = await res.json();
         if (result.success) {
           alert("✅ Mining started. Come back after 24 hrs.");
@@ -663,11 +664,11 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Claiming...';
       
       try {
-        const res = await fetch("http://localhost:3010/claim", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: walletAddress })
-        });
+      const res = await fetch("https://my-backend-gs60.onrender.com/claim", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ wallet: walletAddress })
+});
         const result = await res.json();
         
         if (result.success) {
