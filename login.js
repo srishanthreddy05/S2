@@ -67,7 +67,7 @@ async function handleSuccessfulLogin(user, userData) {
       console.log("Attempting to send bonus tokens...");
       
       try {
-        const response = await fetch("http://localhost:3010/bonus", {
+        const response = await fetch("https://my-backend-gs60.onrender.com/bonus", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ wallet: userData.walletAddress })
